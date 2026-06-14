@@ -83,42 +83,59 @@ def flask_serve_solver_js():
     if not user_key or (valid_user_keys and user_key not in valid_user_keys):
         return Response(fake_404, status=404, mimetype='text/html')
 
-    api_url = request.host_url.rstrip('/') + '/api/solve'
+    api_url = request.host_url.rstrip('/') 
     injector = f"""
     window.__NANH_API_URL__ = '{api_url}';
     window.__NANH_USER_KEY__ = '{user_key}';
     """
-    script = injector + SOLVER_JS
-    unicode_str = "".join([f"\\u{ord(c):04x}" for c in script])
-    anti_debug_wrapper = f"""
+    raw_script = injector + SOLVER_JS
+    import random
+    import string
+    import base64
+    rc4_key = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+    S = list(range(256))
+    j = 0
+    for i in range(256):
+        j = (j + S[i] + ord(rc4_key[i % len(rc4_key)])) % 256
+        S[i], S[j] = S[j], S[i]
+    res = []
+    i = j = 0
+    for char in raw_script:
+        i = (i + 1) % 256
+        j = (j + S[i]) % 256
+        S[i], S[j] = S[j], S[i]
+        res.append(chr(ord(char) ^ S[(S[i] + S[j]) % 256]))
+    encrypted_base64 = base64.b64encode("".join(res).encode('latin1')).decode('utf-8')
+    var_key = f"_0x{random.randint(1000, 9999):x}"
+    var_data = f"_0x{random.randint(1000, 9999):x}"
+    var_s = f"_0x{random.randint(1000, 9999):x}"
+    var_i = f"_0x{random.randint(1000, 9999):x}"
+    var_j = f"_0x{random.randint(1000, 9999):x}"
+    var_x = f"_0x{random.randint(1000, 9999):x}"
+    var_res = f"_0x{random.randint(1000, 9999):x}"
+    polymorphic_decryptor = f"""
+    /* Nanhdev Polymorphic Shield - {random.randint(100000, 999999)} */
     (function(){{
-        setInterval(function(){{
-            try {{
-                (function(){{return false;}}['constructor']('debugger')());
-            }} catch(err) {{}}
-        }}, 50);
-        var _0xcode = '{unicode_str}';
-        var _0xrun = new Function(_0xcode);
-        _0xrun();
+        var {var_key} = '{rc4_key}';
+        var {var_data} = atob('{encrypted_base64}');
+        var {var_s} = [], {var_j} = 0, {var_x}, {var_res} = '';
+        for (var {var_i} = 0; {var_i} < 256; {var_i}++) {var_s}[{var_i}] = {var_i};
+        for (var {var_i} = 0; {var_i} < 256; {var_i}++) {{
+            {var_j} = ({var_j} + {var_s}[{var_i}] + {var_key}.charCodeAt({var_i} % {var_key}.length)) % 256;
+            {var_x} = {var_s}[{var_i}]; {var_s}[{var_i}] = {var_s}[{var_j}]; {var_s}[{var_j}] = {var_x};
+        }}
+        var {var_i} = 0; {var_j} = 0;
+        for (var y = 0; y < {var_data}.length; y++) {{
+            {var_i} = ({var_i} + 1) % 256;
+            {var_j} = ({var_j} + {var_s}[{var_i}]) % 256;
+            {var_x} = {var_s}[{var_i}]; {var_s}[{var_i}] = {var_s}[{var_j}]; {var_s}[{var_j}] = {var_x};
+            {var_res} += String.fromCharCode({var_data}.charCodeAt(y) ^ {var_s}[({var_s}[{var_i}] + {var_s}[{var_j}]) % 256]);
+        }}
+        new Function({var_res})();
     }})();
     """
-    import urllib.parse
-    import random
-    url_encoded = urllib.parse.quote(anti_debug_wrapper)
-    chunk_size = 50
-    chunks = [url_encoded[i:i+chunk_size] for i in range(0, len(url_encoded), chunk_size)]
-    js_vars = []
-    js_concat = []
-    for i, chunk in enumerate(chunks):
-        var_name = f"_0x{random.randint(100000, 999999):x}"
-        js_vars.append(f"var {var_name} = decodeURIComponent('{chunk}');")
-        js_concat.append(var_name)
-        
-    core_js = " ".join(js_vars) + f"var _0xFINAL = {' + '.join(js_concat)}; new Function(_0xFINAL)();"
-    hex_chars = "".join([f"\\x{ord(c):02x}" for c in core_js])
-    obfuscated_script = f"/* Nanhdev Ultimate Shield - DO NOT EDIT */\neval('{hex_chars}');"
-    
-    return Response(obfuscated_script, mimetype='application/javascript')
+    final_script = polymorphic_decryptor.replace('\\n', '').replace('    ', '')
+    return Response(final_script, mimetype='application/javascript')
 
 @app.route('/api/solve', methods=['POST', 'OPTIONS'])
 def solve_captcha():
