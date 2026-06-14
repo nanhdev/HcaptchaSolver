@@ -4,8 +4,6 @@ import os
 import random
 import requests
 import re
-import string
-import base64
 
 app = Flask(__name__)
 CORS(app)
@@ -26,7 +24,7 @@ def is_safe_request(req):
     for bot in ['curl', 'postman', 'wget', 'python', 'urllib', 'httpclient', 'insomnia', 'node-fetch', 'axios', 'go-http-client', 'java', 'ruby', 'perl', 'php']:
         if bot in user_agent:
             return False
-    if not user_agent:
+    if not user_agent or len(user_agent) < 40 or 'mozilla' not in user_agent:
         return False
     return True
 
@@ -70,36 +68,25 @@ def load_keys():
             k = k.strip()
             if k and k not in keys:
                 keys.append(k)
-_0x1a = "'querySelector'"
-_0x1b = "'querySelectorAll'"
-_0x1c = "'.challenge-container'"
-_0x1d = "'.challenge-input'"
-_0x1e = "'.button-submit'"
-_0x1f = "'#text_challenge'"
-_0x2a = "'#anchor'"
-_0x2b = "'#menu-info'"
-_0x2c = "'#prompt-question'"
-_0x2d = "'[id^=\"prompt-text\"]'"
-_0x2e = "'.accessibility-button'"
-_0x2f = "'input[type=\"text\"]'"
+    return keys
 
 SOLVER_JS = r"""
 (() => {
     'use strict';
     
     const VERCEL_API_URL = '__API_URL__';
-    const userKey = '__USER_KEY__';
+    const _userKey_ = '__USER_KEY__';
 
-    const d_qs = (sel) => document[_P0X1_](sel);
-    const d_qsa = (sel) => document[_P0X2_](sel);
-
-    const Time = (() => {
-        const sleep = (i = 1000) => new Promise((resolve) => setTimeout(resolve, i));
-        const now = () => Date.now ? Date.now() : new Date().getTime();
-        return { sleep, now };
+    const _Time_ = (() => {
+        const _sleep_ = (i = 1000) => new Promise((resolve) => setTimeout(resolve, i));
+        const _now_ = () => Date.now ? Date.now() : new Date().getTime();
+        return { _sleep_, _now_ };
     })();
+    
+    const _qS_ = document.querySelector.bind(document);
+    const _qSA_ = document.querySelectorAll.bind(document);
 
-    const simulateMouseClick = (element) => {
+    const _simulateMouseClick_ = (element) => {
         if (!element) return false;
         try {
             const rect = element.getBoundingClientRect();
@@ -133,7 +120,7 @@ SOLVER_JS = r"""
         }
     };
 
-    const solveWithServer = async (fulltask) => {
+    const _solveWithServer_ = async (fulltask) => {
         const query = (fulltask || '').trim();
         if (!query) return '';
         
@@ -143,14 +130,14 @@ SOLVER_JS = r"""
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ question: query, user_key: userKey })
+                body: JSON.stringify({ question: query, user_key: _userKey_ })
             });
             
             if (res.status === 403) {
                 const errData = await res.json();
                 if (errData.error === 'Invalid License Key') {
                     console.error("Mã Kích Hoạt API của bạn đã bị khoá hoặc không đúng!");
-                    isTaskRunning = false;
+                    _isTaskRunning_ = false;
                     return '';
                 }
             }
@@ -169,60 +156,60 @@ SOLVER_JS = r"""
         return '';
     };
 
-    const switchToTextChallenge = async () => {
-        if (d_qs(_P0X4_) || d_qs(_P0XC_)) {
+    const _switchToTextChallenge_ = async () => {
+        if (_qS_('.challenge-input') || _qS_('input[type="text"]')) {
             return;
         }
         for (let i = 0; i < 5; i++) {
-            if (d_qs(_P0X4_) || d_qs(_P0XC_)) {
+            if (_qS_('.challenge-input') || _qS_('input[type="text"]')) {
                 return;
             }
-            const menu = d_qs(_P0XB_) || 
-                         d_qs(_P0X8_) || 
-                         d_qs('.challenge-container .menu') ||
-                         document.querySelector('[title="Menu"]') ||
-                         document.querySelector('[aria-label="Menu"]') ||
-                         document.querySelector('.menu-icon');
+            const menu = _qS_('.accessibility-button') || 
+                         _qS_('#menu-info') || 
+                         _qS_('.challenge-container .menu') ||
+                         _qS_('[title="Menu"]') ||
+                         _qS_('[aria-label="Menu"]') ||
+                         _qS_('.menu-icon');
             if (menu) {
-                simulateMouseClick(menu);
-                await Time.sleep(30);
+                _simulateMouseClick_(menu);
+                await _Time_._sleep_(30);
             }
-            const textChBtn = d_qs(_P0X6_) || 
-                              document.querySelector('.text-challenge-button') ||
-                              document.querySelector('[title="Text Challenge"]') ||
-                              Array.from(document.querySelectorAll('div, button')).find(el => el.innerText && el.innerText.toLowerCase().includes('text challenge'));
+            const textChBtn = _qS_('#text_challenge') || 
+                              _qS_('.text-challenge-button') ||
+                              _qS_('[title="Text Challenge"]') ||
+                              Array.from(_qSA_('div, button')).find(el => el.innerText && el.innerText.toLowerCase().includes('text challenge'));
             if (textChBtn) {
-                simulateMouseClick(textChBtn);
-                await Time.sleep(50);
+                _simulateMouseClick_(textChBtn);
+                await _Time_._sleep_(50);
             } else {
-                await Time.sleep(30);
+                await _Time_._sleep_(30);
             }
         }
     };
 
-    const get_task = async () => {
+    const _get_task_ = async () => {
         let lastQuestion = null;
         let lastAnswer = null;
-        const startTime = Time.now();
+        const startTime = _Time_._now_();
 
         while (true) {
-            if (Time.now() - startTime > 120000) {
+            if (_Time_._now_() - startTime > 120000) {
                 console.log('Timeout solving challenge');
                 break;
             }
 
-            if (!d_qs(_P0X3_) && !d_qs(_P0X8_) && !d_qs(_P0X5_)) {
+            if (!_qS_('.challenge-container') && !_qS_('#menu-info') && !_qS_('.button-submit')) {
                 break;
             }
 
-            await switchToTextChallenge();
+            await _switchToTextChallenge_();
 
             try {
-                const headerEl = d_qs(_P0X9_);
-                const questionEl = d_qs(_P0XA_);
+                const headerEl = _qS_('#prompt-question');
+                const questionEl = _qS_('[id^="prompt-text"]');
                 
                 if (!headerEl && !questionEl) {
-                    await Time.sleep(30);
+                    await _Time_._sleep_(30);
                     continue;
                 }
 
@@ -232,26 +219,26 @@ SOLVER_JS = r"""
                 question = question.trim();
 
                 if (!question || question === lastQuestion) {
-                    await Time.sleep(30);
+                    await _Time_._sleep_(30);
                     continue;
                 }
 
                 let queryToAI = question;
                 console.log('Question to API:', queryToAI);
                 
-                const fixedString = await solveWithServer(queryToAI);
+                const fixedString = await _solveWithServer_(queryToAI);
                 lastQuestion = question;
                 lastAnswer = fixedString;
 
                 if (!fixedString) {
-                    await Time.sleep(100);
+                    await _Time_._sleep_(100);
                     continue;
                 }
 
-                let input = d_qs('div.challenge-input input') || d_qs(_P0XC_);
+                let input = _qS_('div.challenge-input input') || _qS_('input[type="text"]');
                 if (input) {
-                    simulateMouseClick(input);
-                    await Time.sleep(10);
+                    _simulateMouseClick_(input);
+                    await _Time_._sleep_(10);
                     try {
                         const nativeSetter = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(input), 'value')?.set;
                         if (nativeSetter) {
@@ -265,44 +252,44 @@ SOLVER_JS = r"""
                         input.dispatchEvent(new Event('input', { bubbles: true }));
                     }
                     input.dispatchEvent(new Event('change', { bubbles: true }));
-                    await Time.sleep(5); 
+                    await _Time_._sleep_(5); 
                 }
-                const submitBtn = d_qs(_P0X5_);
+                const submitBtn = _qS_('.button-submit');
                 if (submitBtn) {
-                    simulateMouseClick(submitBtn);
-                    await Time.sleep(5);
+                    _simulateMouseClick_(submitBtn);
+                    await _Time_._sleep_(5);
                 }
             } catch (e) {
                 console.error('Error in get_task loop:', e);
-                await Time.sleep(20);
+                await _Time_._sleep_(20);
             }
         }
     };
 
-    let isTaskRunning = false;
-    const checkAndSolve = async () => {
-        if (isTaskRunning) return;
-        const anchor = d_qs(_P0X7_);
-        if (anchor && !d_qs(_P0X3_)) {
+    let _isTaskRunning_ = false;
+    const _checkAndSolve_ = async () => {
+        if (_isTaskRunning_) return;
+        const anchor = _qS_('#anchor');
+        if (anchor && !_qS_('.challenge-container')) {
             const isChecked = anchor.getAttribute('aria-checked') === 'true';
             if (!isChecked) {
-                isTaskRunning = true;
-                simulateMouseClick(anchor);
-                await Time.sleep(5);
-                isTaskRunning = false;
+                _isTaskRunning_ = true;
+                _simulateMouseClick_(anchor);
+                await _Time_._sleep_(5);
+                _isTaskRunning_ = false;
             }
             return;
         }
 
-        if (d_qs(_P0X3_) || d_qs(_P0X8_) || d_qs(_P0X5_)) {
-            isTaskRunning = true;
-            await get_task();
-            isTaskRunning = false;
+        if (_qS_('.challenge-container') || _qS_('#menu-info') || _qS_('.button-submit')) {
+            _isTaskRunning_ = true;
+            await _get_task_();
+            _isTaskRunning_ = false;
         }
     };
     
-    setInterval(checkAndSolve, 10);
-    checkAndSolve();
+    setInterval(_checkAndSolve_, 10);
+    _checkAndSolve_();
 })();
 """
 
@@ -321,58 +308,27 @@ def flask_serve_solver_js():
     api_url = request.host_url.rstrip('/') + '/api/solve'
     script = SOLVER_JS.replace('__API_URL__', api_url).replace('__USER_KEY__', user_key)
     
-    script = script.replace('_P0X1_', _0x1a)
-    script = script.replace('_P0X2_', _0x1b)
-    script = script.replace('_P0X3_', _0x1c)
-    script = script.replace('_P0X4_', _0x1d)
-    script = script.replace('_P0X5_', _0x1e)
-    script = script.replace('_P0X6_', _0x1f)
-    script = script.replace('_P0X7_', _0x2a)
-    script = script.replace('_P0X8_', _0x2b)
-    script = script.replace('_P0X9_', _0x2c)
-    script = script.replace('_P0XA_', _0x2d)
-    script = script.replace('_P0XB_', _0x2e)
-    script = script.replace('_P0XC_', _0x2f)
-
-    sensitive_strings = [
-        '.challenge-container', '.challenge-input', '#prompt-question', '.button-submit',
-        '#text_challenge', 'input[type="text"]', '[id^="prompt-text"]', '#anchor',
-        'aria-checked', '.accessibility-button', '#menu-info', 'text challenge',
-        'application/json', 'solveWithServer', 'get_task', 'checkAndSolve', 'simulateMouseClick'
+    # ---------------- DYNAMIC OBFUSCATOR ----------------
+    # Thay đổi tất cả tên biến JS thành tên rỗng ngẫu nhiên mỗi lần tải
+    import string
+    def r_name(length=6):
+        return ''.join(random.choices(string.ascii_letters, k=length))
+        
+    names_to_obfuscate = [
+        '_qS_', '_qSA_', '_Time_', '_sleep_', '_now_', 
+        '_simulateMouseClick_', '_solveWithServer_', 
+        '_switchToTextChallenge_', '_get_task_', 
+        '_isTaskRunning_', '_checkAndSolve_', '_userKey_'
     ]
     
-    compact_script = re.sub(r'\s+', ' ', script).replace('; ', ';')
-    head = "const _d = (s) => decodeURIComponent(escape(atob(s)));\n"
+    for name in names_to_obfuscate:
+        # Thay thế mỗi tên biến/hàm bằng một chuỗi ngẫu nhiên khác nhau
+        script = script.replace(name, r_name(8))
+    # ----------------------------------------------------
     
-    for s in sensitive_strings:
-        var_name = '_' + ''.join(random.choice(string.ascii_letters) for _ in range(12))
-        b64_str = base64.b64encode(s.encode('utf-8')).decode('utf-8')
-        head += f"const {var_name} = _d('{b64_str}');\n"
-        
-        if s in ['querySelector', 'querySelectorAll', 'getBoundingClientRect', 'dispatchEvent']:
-            compact_script = compact_script.replace(f".{s}", f"[{var_name}]")
-        elif s in ['solveWithServer', 'get_task', 'checkAndSolve', 'simulateMouseClick']:
-            compact_script = compact_script.replace(s, var_name)
-        else:
-            compact_script = compact_script.replace(f"'{s}'", var_name)
-            compact_script = compact_script.replace(f'"{s}"', var_name)
-            
-    chunks = [compact_script[i:i+50] for i in range(0, len(compact_script), 50)]
-    chunk_vars = []
-    
-    for chunk in chunks:
-        v_name = '_' + ''.join(random.choice(string.ascii_letters) for _ in range(6))
-        chunk_vars.append(v_name)
-        b64_chunk = base64.b64encode(chunk.encode('utf-8')).decode('utf-8')
-        head += f"const {v_name} = _d('{b64_chunk}');\n"
-        
-    execution_string = "+".join(chunk_vars)
-    head += f"Function({execution_string})();"
-    
-    final_encoded = base64.b64encode(head.encode('utf-8')).decode('utf-8')
-    
-    junk_vars = "var " + ", ".join(["_" + ''.join(random.choice(string.ascii_letters) for _ in range(4)) + "=" + str(random.randint(100,999)) for _ in range(5)]) + ";"
-    obfuscated_script = f"(function(){{{junk_vars}Function(decodeURIComponent(escape(atob('{final_encoded}'))))();}})();"
+    import base64
+    encoded = base64.b64encode(script.encode('utf-8')).decode('utf-8')
+    obfuscated_script = f"Function(decodeURIComponent(escape(atob('{encoded}'))))();"
     
     return Response(obfuscated_script, mimetype='application/javascript')
 
