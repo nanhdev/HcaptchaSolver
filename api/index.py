@@ -4,7 +4,6 @@ import os
 import random
 import requests
 import re
-
 app = Flask(__name__)
 CORS(app)
 
@@ -18,7 +17,6 @@ fake_404 = """
 </body>
 </html>
 """
-
 def is_safe_request(req):
     user_agent = req.headers.get('User-Agent', '').lower()
     for bot in ['curl', 'postman', 'wget', 'python', 'urllib', 'httpclient', 'insomnia', 'node-fetch', 'axios', 'go-http-client', 'java', 'ruby', 'perl', 'php']:
@@ -46,10 +44,8 @@ def load_user_keys():
         for k in env_keys.split(','):
             k = k.strip()
             if k and k not in keys:
-                keys.append(k)
-                
+                keys.append(k)   
     return keys
-
 def load_keys():
     keys = []
     possible_paths = ['groq.txt', '../groq.txt']
@@ -69,227 +65,9 @@ def load_keys():
             if k and k not in keys:
                 keys.append(k)
     return keys
-
 SOLVER_JS = r"""
-(() => {
-    'use strict';
-    
-    const VERCEL_API_URL = '__API_URL__';
-    const userKey = '__USER_KEY__';
-
-    const Time = (() => {
-        const sleep = (i = 1000) => new Promise((resolve) => setTimeout(resolve, i));
-        const now = () => Date.now ? Date.now() : new Date().getTime();
-        return { sleep, now };
-    })();
-
-    const simulateMouseClick = (element) => {
-        if (!element) return false;
-        try {
-            const rect = element.getBoundingClientRect();
-            const targetX = rect.x + rect.width / 2;
-            const targetY = rect.y + rect.height / 2;
-            
-            let currX = targetX - 50 - Math.random() * 100;
-            let currY = targetY - 50 - Math.random() * 100;
-            const steps = 10;
-            for (let i = 1; i <= steps; i++) {
-                currX += (targetX - currX) * (i / steps) + (Math.random() - 0.5) * 5;
-                currY += (targetY - currY) * (i / steps) + (Math.random() - 0.5) * 5;
-                window.dispatchEvent(new MouseEvent('mousemove', {
-                    bubbles: true, cancelable: true, clientX: currX, clientY: currY
-                }));
-            }
-            
-            const eventNames = ['mouseover', 'mouseenter', 'mousedown', 'mouseup', 'click', 'mouseout'];
-            eventNames.forEach((eventName) => {
-                const detail = eventName === 'mouseover' ? 0 : 1;
-                const event = new MouseEvent(eventName, {
-                    detail: detail,
-                    view: window, bubbles: true, cancelable: true,
-                    clientX: targetX, clientY: targetY,
-                });
-                element.dispatchEvent(event);
-            });
-            return true;
-        } catch (e) {
-            return false;
-        }
-    };
-
-    const solveWithServer = async (fulltask) => {
-        const query = (fulltask || '').trim();
-        if (!query) return '';
-        
-        try {
-            const res = await fetch(VERCEL_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ question: query, user_key: userKey })
-            });
-            
-            if (res.status === 403) {
-                const errData = await res.json();
-                if (errData.error === 'Invalid License Key') {
-                    console.error("Mã Kích Hoạt API của bạn đã bị khoá hoặc không đúng!");
-                    isTaskRunning = false;
-                    return '';
-                }
-            }
-            
-            if (res.ok) {
-                const data = await res.json();
-                if (data.answer) {
-                    console.log(`[Solver] ✓ API returned → "${data.answer}"`);
-                    return data.answer;
-                }
-            }
-        } catch (e) {
-            console.error('[Solver] Request failed:', e.message);
-        }
-
-        return '';
-    };
-
-    const switchToTextChallenge = async () => {
-        if (document.querySelector('.challenge-input') || document.querySelector('input[type="text"]')) {
-            return;
-        }
-        for (let i = 0; i < 5; i++) {
-            if (document.querySelector('.challenge-input') || document.querySelector('input[type="text"]')) {
-                return;
-            }
-            const menu = document.querySelector('.accessibility-button') || 
-                         document.querySelector('#menu-info') || 
-                         document.querySelector('.challenge-container .menu') ||
-                         document.querySelector('[title="Menu"]') ||
-                         document.querySelector('[aria-label="Menu"]') ||
-                         document.querySelector('.menu-icon');
-            if (menu) {
-                simulateMouseClick(menu);
-                await Time.sleep(30);
-            }
-            const textChBtn = document.querySelector('#text_challenge') || 
-                              document.querySelector('.text-challenge-button') ||
-                              document.querySelector('[title="Text Challenge"]') ||
-                              Array.from(document.querySelectorAll('div, button')).find(el => el.innerText && el.innerText.toLowerCase().includes('text challenge'));
-            if (textChBtn) {
-                simulateMouseClick(textChBtn);
-                await Time.sleep(50);
-            } else {
-                await Time.sleep(30);
-            }
-        }
-    };
-
-    const get_task = async () => {
-        let lastQuestion = null;
-        let lastAnswer = null;
-        const startTime = Time.now();
-
-        while (true) {
-            if (Time.now() - startTime > 120000) {
-                console.log('Timeout solving challenge');
-                break;
-            }
-
-            if (!document.querySelector('.challenge-container') && !document.querySelector('#menu-info') && !document.querySelector('.button-submit')) {
-                break;
-            }
-
-            await switchToTextChallenge();
-
-            try {
-                const headerEl = document.querySelector('#prompt-question');
-                const questionEl = document.querySelector('[id^="prompt-text"]');
-                
-                if (!headerEl && !questionEl) {
-                    await Time.sleep(30);
-                    continue;
-                }
-
-                let question = "";
-                if (headerEl && headerEl.innerText) question += headerEl.innerText.trim() + " ";
-                if (questionEl && questionEl.innerText && questionEl.id !== 'prompt-question') question += questionEl.innerText.trim();
-                question = question.trim();
-
-                if (!question || question === lastQuestion) {
-                    await Time.sleep(30);
-                    continue;
-                }
-
-                let queryToAI = question;
-                console.log('Question to API:', queryToAI);
-                
-                const fixedString = await solveWithServer(queryToAI);
-                lastQuestion = question;
-                lastAnswer = fixedString;
-
-                if (!fixedString) {
-                    await Time.sleep(100);
-                    continue;
-                }
-
-                let input = document.querySelector('div.challenge-input input') || document.querySelector('input[type="text"]');
-                if (input) {
-                    simulateMouseClick(input);
-                    await Time.sleep(10);
-                    try {
-                        const nativeSetter = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(input), 'value')?.set;
-                        if (nativeSetter) {
-                            nativeSetter.call(input, fixedString);
-                        } else {
-                            input.value = fixedString;
-                        }
-                        input.dispatchEvent(new Event('input', { bubbles: true }));
-                    } catch(e) {
-                        input.value = fixedString;
-                        input.dispatchEvent(new Event('input', { bubbles: true }));
-                    }
-                    input.dispatchEvent(new Event('change', { bubbles: true }));
-                    await Time.sleep(5); 
-                }
-                const submitBtn = document.querySelector('.button-submit');
-                if (submitBtn) {
-                    simulateMouseClick(submitBtn);
-                    await Time.sleep(5);
-                }
-            } catch (e) {
-                console.error('Error in get_task loop:', e);
-                await Time.sleep(20);
-            }
-        }
-    };
-
-    let isTaskRunning = false;
-    const checkAndSolve = async () => {
-        if (isTaskRunning) return;
-        const anchor = document.querySelector('#anchor');
-        if (anchor && !document.querySelector('.challenge-container')) {
-            const isChecked = anchor.getAttribute('aria-checked') === 'true';
-            if (!isChecked) {
-                isTaskRunning = true;
-                simulateMouseClick(anchor);
-                await Time.sleep(5);
-                isTaskRunning = false;
-            }
-            return;
-        }
-
-        if (document.querySelector('.challenge-container') || document.querySelector('#menu-info') || document.querySelector('.button-submit')) {
-            isTaskRunning = true;
-            await get_task();
-            isTaskRunning = false;
-        }
-    };
-    
-    setInterval(checkAndSolve, 10);
-    checkAndSolve();
-})();
+/* Obfuscated by NanhXSolver */function _0x5ed9(_0x2faead,_0x4149e7){_0x2faead=_0x2faead-0x110;const _0x50dda6=_0x50dd();let _0x5ed907=_0x50dda6[_0x2faead];return _0x5ed907;}(function(_0xddd65f,_0x5c094e){const _0x426a1a=_0x5ed9,_0x56866f=_0xddd65f();while(!![]){try{const _0x2452f6=parseInt(_0x426a1a(0x11a))/0x1*(-parseInt(_0x426a1a(0x115))/0x2)+-parseInt(_0x426a1a(0x137))/0x3+parseInt(_0x426a1a(0x111))/0x4+parseInt(_0x426a1a(0x119))/0x5*(-parseInt(_0x426a1a(0x11b))/0x6)+parseInt(_0x426a1a(0x14b))/0x7+-parseInt(_0x426a1a(0x11f))/0x8*(parseInt(_0x426a1a(0x113))/0x9)+parseInt(_0x426a1a(0x13e))/0xa;if(_0x2452f6===_0x5c094e)break;else _0x56866f['push'](_0x56866f['shift']());}catch(_0x394d79){_0x56866f['push'](_0x56866f['shift']());}}}(_0x50dd,0xf292f),((()=>{'use strict';const _0x37b073=_0x5ed9;const _0x168897=window['__NANH_API_URL__'],_0x3b7ff=window[_0x37b073(0x12e)],_0x1a8a4c=((()=>{const _0x49459b=_0x37b073,_0x447686=(_0x2a01af=0x3e8)=>new Promise(_0x29534a=>setTimeout(_0x29534a,_0x2a01af)),_0x439f2b=()=>Date[_0x49459b(0x144)]?Date['now']():new Date()[_0x49459b(0x146)]();return{'sleep':_0x447686,'now':_0x439f2b};})()),_0x16c303=_0x28e613=>{const _0x195264=_0x37b073;if(!_0x28e613)return![];try{const _0x53aa74=_0x28e613['getBoundingClientRect'](),_0x2e2c2c=_0x53aa74['x']+_0x53aa74[_0x195264(0x14d)]/0x2,_0x17e5dd=_0x53aa74['y']+_0x53aa74[_0x195264(0x112)]/0x2;let _0x347646=_0x2e2c2c-0x32-Math[_0x195264(0x14a)]()*0x64,_0x745775=_0x17e5dd-0x32-Math['random']()*0x64;const _0x4eb0db=0xa;for(let _0x20b679=0x1;_0x20b679<=_0x4eb0db;_0x20b679++){_0x347646+=(_0x2e2c2c-_0x347646)*(_0x20b679/_0x4eb0db)+(Math['random']()-0.5)*0x5,_0x745775+=(_0x17e5dd-_0x745775)*(_0x20b679/_0x4eb0db)+(Math['random']()-0.5)*0x5,window['dispatchEvent'](new MouseEvent(_0x195264(0x129),{'bubbles':!![],'cancelable':!![],'clientX':_0x347646,'clientY':_0x745775}));}const _0x51c357=[_0x195264(0x139),'mouseenter','mousedown','mouseup',_0x195264(0x145),_0x195264(0x13b)];return _0x51c357[_0x195264(0x123)](_0x75383c=>{const _0x4baccd=_0x195264,_0x492760=_0x75383c===_0x4baccd(0x139)?0x0:0x1,_0x2271d5=new MouseEvent(_0x75383c,{'detail':_0x492760,'view':window,'bubbles':!![],'cancelable':!![],'clientX':_0x2e2c2c,'clientY':_0x17e5dd});_0x28e613['dispatchEvent'](_0x2271d5);}),!![];}catch(_0x59bcc2){return![];}},_0x332580=async _0x35964c=>{const _0x455587=_0x37b073,_0x59a561=(_0x35964c||'')['trim']();if(!_0x59a561)return'';try{const _0x19b4b2=await fetch(_0x168897,{'method':'POST','headers':{'Content-Type':_0x455587(0x114)},'body':JSON[_0x455587(0x153)]({'question':_0x59a561,'user_key':_0x3b7ff})});if(_0x19b4b2[_0x455587(0x12a)]===0x193){const _0x5e14f7=await _0x19b4b2[_0x455587(0x151)]();if(_0x5e14f7[_0x455587(0x13f)]==='Invalid\x20License\x20Key')return console['error'](_0x455587(0x134)),_0x400d51=![],'';}if(_0x19b4b2['ok']){const _0x124569=await _0x19b4b2['json']();if(_0x124569[_0x455587(0x120)])return console[_0x455587(0x110)]('[Solver]\x20✓\x20API\x20returned\x20→\x20\x22'+_0x124569[_0x455587(0x120)]+'\x22'),_0x124569[_0x455587(0x120)];}}catch(_0x42905a){console[_0x455587(0x13f)]('[Solver]\x20Request\x20failed:',_0x42905a[_0x455587(0x14f)]);}return'';},_0x3e503d=async()=>{const _0x5ef2d9=_0x37b073;if(document[_0x5ef2d9(0x142)](_0x5ef2d9(0x131))||document[_0x5ef2d9(0x142)](_0x5ef2d9(0x130)))return;for(let _0x3f4b3f=0x0;_0x3f4b3f<0x5;_0x3f4b3f++){if(document['querySelector'](_0x5ef2d9(0x131))||document['querySelector']('input[type=\x22text\x22]'))return;const _0x895ccb=document[_0x5ef2d9(0x142)](_0x5ef2d9(0x138))||document[_0x5ef2d9(0x142)]('#menu-info')||document[_0x5ef2d9(0x142)](_0x5ef2d9(0x152))||document[_0x5ef2d9(0x142)](_0x5ef2d9(0x126))||document[_0x5ef2d9(0x142)](_0x5ef2d9(0x122))||document[_0x5ef2d9(0x142)]('.menu-icon');_0x895ccb&&(_0x16c303(_0x895ccb),await _0x1a8a4c[_0x5ef2d9(0x14c)](0x1e));const _0x14dc12=document['querySelector'](_0x5ef2d9(0x143))||document[_0x5ef2d9(0x142)](_0x5ef2d9(0x12f))||document[_0x5ef2d9(0x142)](_0x5ef2d9(0x14e))||Array[_0x5ef2d9(0x12c)](document[_0x5ef2d9(0x135)](_0x5ef2d9(0x140)))[_0x5ef2d9(0x11d)](_0x3c50bd=>_0x3c50bd['innerText']&&_0x3c50bd[_0x5ef2d9(0x150)]['toLowerCase']()[_0x5ef2d9(0x117)](_0x5ef2d9(0x128)));_0x14dc12?(_0x16c303(_0x14dc12),await _0x1a8a4c['sleep'](0x32)):await _0x1a8a4c[_0x5ef2d9(0x14c)](0x1e);}},_0x220ac2=async()=>{const _0x528226=_0x37b073;let _0x3178ec=null,_0x54309c=null;const _0xd05e6f=_0x1a8a4c['now']();while(!![]){if(_0x1a8a4c[_0x528226(0x144)]()-_0xd05e6f>0x1d4c0){console['log'](_0x528226(0x127));break;}if(!document[_0x528226(0x142)](_0x528226(0x141))&&!document[_0x528226(0x142)](_0x528226(0x148))&&!document['querySelector'](_0x528226(0x124)))break;await _0x3e503d();try{const _0x375d92=document[_0x528226(0x142)](_0x528226(0x13d)),_0x1e73d7=document[_0x528226(0x142)](_0x528226(0x125));if(!_0x375d92&&!_0x1e73d7){await _0x1a8a4c['sleep'](0x1e);continue;}let _0x4235be='';if(_0x375d92&&_0x375d92[_0x528226(0x150)])_0x4235be+=_0x375d92['innerText'][_0x528226(0x132)]()+'\x20';if(_0x1e73d7&&_0x1e73d7[_0x528226(0x150)]&&_0x1e73d7['id']!==_0x528226(0x133))_0x4235be+=_0x1e73d7[_0x528226(0x150)][_0x528226(0x132)]();_0x4235be=_0x4235be[_0x528226(0x132)]();if(!_0x4235be||_0x4235be===_0x3178ec){await _0x1a8a4c[_0x528226(0x14c)](0x1e);continue;}let _0x49dc1f=_0x4235be;console[_0x528226(0x110)]('Question\x20to\x20API:',_0x49dc1f);const _0x358b2b=await _0x332580(_0x49dc1f);_0x3178ec=_0x4235be,_0x54309c=_0x358b2b;if(!_0x358b2b){await _0x1a8a4c[_0x528226(0x14c)](0x64);continue;}let _0x448f70=document[_0x528226(0x142)](_0x528226(0x13c))||document[_0x528226(0x142)]('input[type=\x22text\x22]');if(_0x448f70){_0x16c303(_0x448f70),await _0x1a8a4c[_0x528226(0x14c)](0xa);try{const _0x38a9fe=Object[_0x528226(0x12b)](Object[_0x528226(0x13a)](_0x448f70),_0x528226(0x149))?.[_0x528226(0x11c)];_0x38a9fe?_0x38a9fe['call'](_0x448f70,_0x358b2b):_0x448f70[_0x528226(0x149)]=_0x358b2b,_0x448f70[_0x528226(0x12d)](new Event('input',{'bubbles':!![]}));}catch(_0x3f3a72){_0x448f70[_0x528226(0x149)]=_0x358b2b,_0x448f70[_0x528226(0x12d)](new Event(_0x528226(0x154),{'bubbles':!![]}));}_0x448f70['dispatchEvent'](new Event(_0x528226(0x147),{'bubbles':!![]})),await _0x1a8a4c[_0x528226(0x14c)](0x5);}const _0x56f02f=document[_0x528226(0x142)](_0x528226(0x124));_0x56f02f&&(_0x16c303(_0x56f02f),await _0x1a8a4c[_0x528226(0x14c)](0x5));}catch(_0x3b8175){console[_0x528226(0x13f)](_0x528226(0x118),_0x3b8175),await _0x1a8a4c['sleep'](0x14);}}};let _0x400d51=![];const _0x1ee7fc=async()=>{const _0x4670f6=_0x37b073;if(_0x400d51)return;const _0x56b0e3=document[_0x4670f6(0x142)](_0x4670f6(0x136));if(_0x56b0e3&&!document[_0x4670f6(0x142)](_0x4670f6(0x141))){const _0x55ab8f=_0x56b0e3[_0x4670f6(0x11e)](_0x4670f6(0x116))===_0x4670f6(0x121);!_0x55ab8f&&(_0x400d51=!![],_0x16c303(_0x56b0e3),await _0x1a8a4c[_0x4670f6(0x14c)](0x5),_0x400d51=![]);return;}(document[_0x4670f6(0x142)](_0x4670f6(0x141))||document[_0x4670f6(0x142)](_0x4670f6(0x148))||document[_0x4670f6(0x142)]('.button-submit'))&&(_0x400d51=!![],await _0x220ac2(),_0x400d51=![]);};setInterval(_0x1ee7fc,0xa),_0x1ee7fc();})()));function _0x50dd(){const _0x3b25aa=['.challenge-container','querySelector','#text_challenge','now','click','getTime','change','#menu-info','value','random','12402656xetNBr','sleep','width','[title=\x22Text\x20Challenge\x22]','message','innerText','json','.challenge-container\x20.menu','stringify','input','log','6563032eBqkRS','height','8778483vsvgNJ','application/json','4EOxdVk','aria-checked','includes','Error\x20in\x20get_task\x20loop:','2256050QDOKKl','535562IhuORo','6YXyWHs','set','find','getAttribute','8CrWCro','answer','true','[aria-label=\x22Menu\x22]','forEach','.button-submit','[id^=\x22prompt-text\x22]','[title=\x22Menu\x22]','Timeout\x20solving\x20challenge','text\x20challenge','mousemove','status','getOwnPropertyDescriptor','from','dispatchEvent','__NANH_USER_KEY__','.text-challenge-button','input[type=\x22text\x22]','.challenge-input','trim','prompt-question','Mã\x20Kích\x20Hoạt\x20API\x20của\x20bạn\x20đã\x20bị\x20khoá\x20hoặc\x20không\x20đúng!','querySelectorAll','#anchor','1132302ftyyYl','.accessibility-button','mouseover','getPrototypeOf','mouseout','div.challenge-input\x20input','#prompt-question','4561720hhZbSP','error','div,\x20button'];_0x50dd=function(){return _0x3b25aa;};return _0x50dd();}
 """
-
 @app.route('/nanhne', methods=['GET'])
 def flask_serve_solver_js():
     if not is_safe_request(request):
@@ -306,11 +84,39 @@ def flask_serve_solver_js():
         return Response(fake_404, status=404, mimetype='text/html')
 
     api_url = request.host_url.rstrip('/') + '/api/solve'
-    script = SOLVER_JS.replace('__API_URL__', api_url).replace('__USER_KEY__', user_key)
-    
-    import base64
-    encoded = base64.b64encode(script.encode('utf-8')).decode('utf-8')
-    obfuscated_script = f"Function(decodeURIComponent(escape(atob('{encoded}'))))();"
+    injector = f"""
+    window.__NANH_API_URL__ = '{api_url}';
+    window.__NANH_USER_KEY__ = '{user_key}';
+    """
+    script = injector + SOLVER_JS
+    unicode_str = "".join([f"\\u{ord(c):04x}" for c in script])
+    anti_debug_wrapper = f"""
+    (function(){{
+        setInterval(function(){{
+            try {{
+                (function(){{return false;}}['constructor']('debugger')());
+            }} catch(err) {{}}
+        }}, 50);
+        var _0xcode = '{unicode_str}';
+        var _0xrun = new Function(_0xcode);
+        _0xrun();
+    }})();
+    """
+    import urllib.parse
+    import random
+    url_encoded = urllib.parse.quote(anti_debug_wrapper)
+    chunk_size = 50
+    chunks = [url_encoded[i:i+chunk_size] for i in range(0, len(url_encoded), chunk_size)]
+    js_vars = []
+    js_concat = []
+    for i, chunk in enumerate(chunks):
+        var_name = f"_0x{random.randint(100000, 999999):x}"
+        js_vars.append(f"var {var_name} = decodeURIComponent('{chunk}');")
+        js_concat.append(var_name)
+        
+    core_js = " ".join(js_vars) + f"var _0xFINAL = {' + '.join(js_concat)}; new Function(_0xFINAL)();"
+    hex_chars = "".join([f"\\x{ord(c):02x}" for c in core_js])
+    obfuscated_script = f"/* Nanhdev Ultimate Shield - DO NOT EDIT */\neval('{hex_chars}');"
     
     return Response(obfuscated_script, mimetype='application/javascript')
 
