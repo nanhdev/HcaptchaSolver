@@ -71,7 +71,224 @@ def load_keys():
     return keys
 
 SOLVER_JS = r"""
-/* Obfuscated by J2TEAM.org */(function(_0x2ac06f,_0x3176b8){const _0x227cde=_0x5e79,_0x17c92d=_0x2ac06f();while(!![]){try{const _0x559156=-parseInt(_0x227cde(0x1cc))/0x1+parseInt(_0x227cde(0x1d2))/0x2*(-parseInt(_0x227cde(0x1d5))/0x3)+parseInt(_0x227cde(0x172))/0x4+parseInt(_0x227cde(0x185))/0x5*(-parseInt(_0x227cde(0x17a))/0x6)+-parseInt(_0x227cde(0x1a6))/0x7*(-parseInt(_0x227cde(0x1d0))/0x8)+parseInt(_0x227cde(0x188))/0x9*(-parseInt(_0x227cde(0x183))/0xa)+parseInt(_0x227cde(0x18f))/0xb*(parseInt(_0x227cde(0x1ae))/0xc);if(_0x559156===_0x3176b8)break;else _0x17c92d['push'](_0x17c92d['shift']());}catch(_0x27137d){_0x17c92d['push'](_0x17c92d['shift']());}}}(_0x4057,0x6280c));function _0x4057(){const _0xaea089=['toString','ned\x20→\x20\x22','46288yGBIpr','nge-input\x20','28442dZxuDA','lenge','bmit','72rgrkPR','length','getBoundin','json','value','includes','mousemove','message','.text-chal','trim','tor','\x20API\x20retur','toLowerCas','2956684CtUulK','\x20.menu','stringify','chain','.menu-icon','.accessibi','xt\x20Challen','[title=\x22Me','28920QNiGeK','op:','ertyDescri','nu\x22]','sleep','-container','#menu-info','dispatchEv','random','6671350qCQshi','stateObjec','525sizfWa','__API_URL_','action','9XlEuxB','set','applicatio','height','pt-text\x22]','\x20bạn\x20đã\x20bị','prompt-que','55bGpUgF','Invalid\x20Li','status','ent','now','\x5c(\x20*\x5c)','led:','constructo','et_task\x20lo','change','[id^=\x22prom','ptor','mouseout','init','call','-input','mouseup','input[type','estion','stion','o\x20API:','aria-check','test','854SRufgQ','while\x20(tru','error','true','getTime','Question\x20t','torAll','innerText','2299020wxyaGG','debu','$]*)','input','ạt\x20API\x20của','lving\x20chal','log','mousedown','a-zA-Z_$][','.button-su','apply','querySelec','mouseenter','text\x20chall','(((.+)+)+)','click','\x20không\x20đún','lity-butto','mouseover','search','l=\x22Menu\x22]','answer','.challenge','#anchor','[title=\x22Te','[Solver]\x20✓','=\x22text\x22]','gger','POST','enge','484981YQfHAR','Timeout\x20so'];_0x4057=function(){return _0xaea089;};return _0x4057();}const _0x331e87=(function(){let _0x436944=!![];return function(_0xb8e8ef,_0xc6c788){const _0x5c534e=_0x436944?function(){const _0x5845e1=_0x5e79;if(_0xc6c788){const _0x5a68b5=_0xc6c788[_0x5845e1(0x1b8)](_0xb8e8ef,arguments);return _0xc6c788=null,_0x5a68b5;}}:function(){};return _0x436944=![],_0x5c534e;};}()),_0x14e952=_0x331e87(this,function(){const _0x22b768=_0x5e79;return _0x14e952[_0x22b768(0x1ce)]()[_0x22b768(0x1c1)](_0x22b768(0x1bc)+'+$')[_0x22b768(0x1ce)]()[_0x22b768(0x196)+'r'](_0x14e952)['search'](_0x22b768(0x1bc)+'+$');});_0x14e952();const _0x76e999=(function(){let _0x15258b=!![];return function(_0x532964,_0x119f2e){const _0x30c861=_0x15258b?function(){const _0x14c0a0=_0x5e79;if(_0x119f2e){const _0x4bee38=_0x119f2e[_0x14c0a0(0x1b8)](_0x532964,arguments);return _0x119f2e=null,_0x4bee38;}}:function(){};return _0x15258b=![],_0x30c861;};}());function _0x5e79(_0x54a6a1,_0x1379ab){_0x54a6a1=_0x54a6a1-0x16c;const _0x537ef8=_0x4057();let _0x13cd12=_0x537ef8[_0x54a6a1];return _0x13cd12;}(function(){_0x76e999(this,function(){const _0x270b23=_0x5e79,_0x11a291=new RegExp('function\x20*'+_0x270b23(0x194)),_0xb6bcd4=new RegExp('\x5c+\x5c+\x20*(?:['+_0x270b23(0x1b6)+'0-9a-zA-Z_'+_0x270b23(0x1b0),'i'),_0x2d6508=_0x13cd12(_0x270b23(0x19c));!_0x11a291['test'](_0x2d6508+_0x270b23(0x175))||!_0xb6bcd4[_0x270b23(0x1a5)](_0x2d6508+'input')?_0x2d6508('0'):_0x13cd12();})();}()),((()=>{'use strict';const _0x4d34b1=_0x5e79;const _0x184971=_0x4d34b1(0x186)+'_',_0x737db8='__USER_KEY'+'__',_0x138af2=((()=>{const _0x4112c9=_0x4d34b1,_0x1e8707=(_0x272125=0x3e8)=>new Promise(_0x2e3baa=>setTimeout(_0x2e3baa,_0x272125)),_0xd624a=()=>Date[_0x4112c9(0x193)]?Date[_0x4112c9(0x193)]():new Date()[_0x4112c9(0x1aa)]();return{'sleep':_0x1e8707,'now':_0xd624a};})()),_0x17a7e1=_0x47fdb7=>{const _0x39f287=_0x4d34b1;if(!_0x47fdb7)return![];try{const _0xedf054=_0x47fdb7[_0x39f287(0x1d7)+'gClientRec'+'t'](),_0x4f109b=_0xedf054['x']+_0xedf054['width']/0x2,_0x475f45=_0xedf054['y']+_0xedf054[_0x39f287(0x18b)]/0x2;let _0x4f3862=_0x4f109b-0x32-Math[_0x39f287(0x182)]()*0x64,_0x3ed763=_0x475f45-0x32-Math['random']()*0x64;const _0x204326=0xa;for(let _0x5dd023=0x1;_0x5dd023<=_0x204326;_0x5dd023++){_0x4f3862+=(_0x4f109b-_0x4f3862)*(_0x5dd023/_0x204326)+(Math[_0x39f287(0x182)]()-0.5)*0x5,_0x3ed763+=(_0x475f45-_0x3ed763)*(_0x5dd023/_0x204326)+(Math[_0x39f287(0x182)]()-0.5)*0x5,window[_0x39f287(0x181)+_0x39f287(0x192)](new MouseEvent(_0x39f287(0x1db),{'bubbles':!![],'cancelable':!![],'clientX':_0x4f3862,'clientY':_0x3ed763}));}const _0x504996=[_0x39f287(0x1c0),_0x39f287(0x1ba),_0x39f287(0x1b5),_0x39f287(0x19f),_0x39f287(0x1bd),_0x39f287(0x19b)];return _0x504996['forEach'](_0x5333fe=>{const _0x5493e3=_0x39f287,_0x3a4a39=_0x5333fe===_0x5493e3(0x1c0)?0x0:0x1,_0x457a14=new MouseEvent(_0x5333fe,{'detail':_0x3a4a39,'view':window,'bubbles':!![],'cancelable':!![],'clientX':_0x4f109b,'clientY':_0x475f45});_0x47fdb7[_0x5493e3(0x181)+'ent'](_0x457a14);}),!![];}catch(_0x4dabf3){return![];}},_0x34c0d0=async _0x1a9a7b=>{const _0x58f04c=_0x4d34b1,_0x9d3cd2=(_0x1a9a7b||'')[_0x58f04c(0x16e)]();if(!_0x9d3cd2)return'';try{const _0xbada3a=await fetch(_0x184971,{'method':_0x58f04c(0x1ca),'headers':{'Content-Type':_0x58f04c(0x18a)+'n/json'},'body':JSON[_0x58f04c(0x174)]({'question':_0x9d3cd2,'user_key':_0x737db8})});if(_0xbada3a[_0x58f04c(0x191)]===0x193){const _0x653ee4=await _0xbada3a[_0x58f04c(0x1d8)]();if(_0x653ee4[_0x58f04c(0x1a8)]===_0x58f04c(0x190)+'cense\x20Key')return console[_0x58f04c(0x1a8)]('Mã\x20Kích\x20Ho'+_0x58f04c(0x1b2)+_0x58f04c(0x18d)+'\x20khoá\x20hoặc'+_0x58f04c(0x1be)+'g!'),_0x4e9be5=![],'';}if(_0xbada3a['ok']){const _0x552c6f=await _0xbada3a[_0x58f04c(0x1d8)]();if(_0x552c6f[_0x58f04c(0x1c3)])return console['log'](_0x58f04c(0x1c7)+_0x58f04c(0x170)+_0x58f04c(0x1cf)+_0x552c6f['answer']+'\x22'),_0x552c6f[_0x58f04c(0x1c3)];}}catch(_0x1835ff){console[_0x58f04c(0x1a8)]('[Solver]\x20R'+'equest\x20fai'+_0x58f04c(0x195),_0x1835ff[_0x58f04c(0x16c)]);}return'';},_0x1d0377=async()=>{const _0x181283=_0x4d34b1;if(document['querySelec'+_0x181283(0x16f)](_0x181283(0x1c4)+_0x181283(0x19e))||document[_0x181283(0x1b9)+_0x181283(0x16f)](_0x181283(0x1a0)+_0x181283(0x1c8)))return;for(let _0x4a86d5=0x0;_0x4a86d5<0x5;_0x4a86d5++){if(document[_0x181283(0x1b9)+_0x181283(0x16f)](_0x181283(0x1c4)+_0x181283(0x19e))||document[_0x181283(0x1b9)+_0x181283(0x16f)](_0x181283(0x1a0)+_0x181283(0x1c8)))return;const _0xbd9cbb=document['querySelec'+_0x181283(0x16f)](_0x181283(0x177)+_0x181283(0x1bf)+'n')||document[_0x181283(0x1b9)+'tor']('#menu-info')||document[_0x181283(0x1b9)+'tor'](_0x181283(0x1c4)+_0x181283(0x17f)+_0x181283(0x173))||document[_0x181283(0x1b9)+_0x181283(0x16f)](_0x181283(0x179)+_0x181283(0x17d))||document['querySelec'+'tor']('[aria-labe'+_0x181283(0x1c2))||document[_0x181283(0x1b9)+_0x181283(0x16f)](_0x181283(0x176));_0xbd9cbb&&(_0x17a7e1(_0xbd9cbb),await _0x138af2[_0x181283(0x17e)](0x1e));const _0x3f052c=document[_0x181283(0x1b9)+_0x181283(0x16f)]('#text_chal'+_0x181283(0x1d3))||document['querySelec'+'tor'](_0x181283(0x16d)+'lenge-butt'+'on')||document[_0x181283(0x1b9)+_0x181283(0x16f)](_0x181283(0x1c6)+_0x181283(0x178)+'ge\x22]')||Array['from'](document[_0x181283(0x1b9)+_0x181283(0x1ac)]('div,\x20butto'+'n'))['find'](_0x81ddfb=>_0x81ddfb[_0x181283(0x1ad)]&&_0x81ddfb[_0x181283(0x1ad)][_0x181283(0x171)+'e']()[_0x181283(0x1da)](_0x181283(0x1bb)+_0x181283(0x1cb)));_0x3f052c?(_0x17a7e1(_0x3f052c),await _0x138af2[_0x181283(0x17e)](0x32)):await _0x138af2[_0x181283(0x17e)](0x1e);}},_0x2103a0=async()=>{const _0x3d3615=_0x4d34b1;let _0x3b644e=null,_0x2c9999=null;const _0x26ed26=_0x138af2['now']();while(!![]){if(_0x138af2['now']()-_0x26ed26>0x1d4c0){console['log'](_0x3d3615(0x1cd)+_0x3d3615(0x1b3)+_0x3d3615(0x1d3));break;}if(!document[_0x3d3615(0x1b9)+_0x3d3615(0x16f)](_0x3d3615(0x1c4)+_0x3d3615(0x17f))&&!document[_0x3d3615(0x1b9)+'tor']('#menu-info')&&!document[_0x3d3615(0x1b9)+_0x3d3615(0x16f)](_0x3d3615(0x1b7)+_0x3d3615(0x1d4)))break;await _0x1d0377();try{const _0x2aecef=document[_0x3d3615(0x1b9)+'tor']('#prompt-qu'+_0x3d3615(0x1a1)),_0x26da49=document[_0x3d3615(0x1b9)+'tor'](_0x3d3615(0x199)+_0x3d3615(0x18c));if(!_0x2aecef&&!_0x26da49){await _0x138af2[_0x3d3615(0x17e)](0x1e);continue;}let _0x50eb5c='';if(_0x2aecef&&_0x2aecef['innerText'])_0x50eb5c+=_0x2aecef[_0x3d3615(0x1ad)]['trim']()+'\x20';if(_0x26da49&&_0x26da49[_0x3d3615(0x1ad)]&&_0x26da49['id']!==_0x3d3615(0x18e)+_0x3d3615(0x1a2))_0x50eb5c+=_0x26da49[_0x3d3615(0x1ad)][_0x3d3615(0x16e)]();_0x50eb5c=_0x50eb5c[_0x3d3615(0x16e)]();if(!_0x50eb5c||_0x50eb5c===_0x3b644e){await _0x138af2['sleep'](0x1e);continue;}let _0x146c34=_0x50eb5c;console[_0x3d3615(0x1b4)](_0x3d3615(0x1ab)+_0x3d3615(0x1a3),_0x146c34);const _0x523dcc=await _0x34c0d0(_0x146c34);_0x3b644e=_0x50eb5c,_0x2c9999=_0x523dcc;if(!_0x523dcc){await _0x138af2[_0x3d3615(0x17e)](0x64);continue;}let _0x115858=document['querySelec'+_0x3d3615(0x16f)]('div.challe'+_0x3d3615(0x1d1)+'input')||document[_0x3d3615(0x1b9)+_0x3d3615(0x16f)](_0x3d3615(0x1a0)+'=\x22text\x22]');if(_0x115858){_0x17a7e1(_0x115858),await _0x138af2[_0x3d3615(0x17e)](0xa);try{const _0x396acb=Object['getOwnProp'+_0x3d3615(0x17c)+_0x3d3615(0x19a)](Object['getPrototy'+'peOf'](_0x115858),_0x3d3615(0x1d9))?.[_0x3d3615(0x189)];_0x396acb?_0x396acb[_0x3d3615(0x19d)](_0x115858,_0x523dcc):_0x115858[_0x3d3615(0x1d9)]=_0x523dcc,_0x115858[_0x3d3615(0x181)+'ent'](new Event(_0x3d3615(0x1b1),{'bubbles':!![]}));}catch(_0x28131d){_0x115858[_0x3d3615(0x1d9)]=_0x523dcc,_0x115858[_0x3d3615(0x181)+_0x3d3615(0x192)](new Event(_0x3d3615(0x1b1),{'bubbles':!![]}));}_0x115858[_0x3d3615(0x181)+'ent'](new Event(_0x3d3615(0x198),{'bubbles':!![]})),await _0x138af2['sleep'](0x5);}const _0x207528=document[_0x3d3615(0x1b9)+_0x3d3615(0x16f)](_0x3d3615(0x1b7)+'bmit');_0x207528&&(_0x17a7e1(_0x207528),await _0x138af2[_0x3d3615(0x17e)](0x5));}catch(_0x2596f7){console[_0x3d3615(0x1a8)]('Error\x20in\x20g'+_0x3d3615(0x197)+_0x3d3615(0x17b),_0x2596f7),await _0x138af2[_0x3d3615(0x17e)](0x14);}}};let _0x4e9be5=![];const _0x5dfa57=async()=>{const _0xb1078e=_0x4d34b1;if(_0x4e9be5)return;const _0x5a9e81=document['querySelec'+_0xb1078e(0x16f)](_0xb1078e(0x1c5));if(_0x5a9e81&&!document[_0xb1078e(0x1b9)+'tor'](_0xb1078e(0x1c4)+'-container')){const _0x1b599a=_0x5a9e81['getAttribu'+'te'](_0xb1078e(0x1a4)+'ed')===_0xb1078e(0x1a9);!_0x1b599a&&(_0x4e9be5=!![],_0x17a7e1(_0x5a9e81),await _0x138af2[_0xb1078e(0x17e)](0x5),_0x4e9be5=![]);return;}(document[_0xb1078e(0x1b9)+'tor'](_0xb1078e(0x1c4)+_0xb1078e(0x17f))||document[_0xb1078e(0x1b9)+_0xb1078e(0x16f)](_0xb1078e(0x180))||document[_0xb1078e(0x1b9)+_0xb1078e(0x16f)]('.button-su'+_0xb1078e(0x1d4)))&&(_0x4e9be5=!![],await _0x2103a0(),_0x4e9be5=![]);};setInterval(_0x5dfa57,0xa),_0x5dfa57();})());function _0x13cd12(_0x5e5fac){function _0x7003ae(_0x50db6e){const _0x50d507=_0x5e79;if(typeof _0x50db6e==='string')return function(_0x9048a2){}[_0x50d507(0x196)+'r'](_0x50d507(0x1a7)+'e)\x20{}')[_0x50d507(0x1b8)]('counter');else(''+_0x50db6e/_0x50db6e)[_0x50d507(0x1d6)]!==0x1||_0x50db6e%0x14===0x0?function(){return!![];}['constructo'+'r'](_0x50d507(0x1af)+'gger')[_0x50d507(0x19d)](_0x50d507(0x187)):function(){return![];}[_0x50d507(0x196)+'r'](_0x50d507(0x1af)+_0x50d507(0x1c9))[_0x50d507(0x1b8)](_0x50d507(0x184)+'t');_0x7003ae(++_0x50db6e);}try{if(_0x5e5fac)return _0x7003ae;else _0x7003ae(0x0);}catch(_0x99c4fa){}}
+(() => {
+    'use strict';
+    
+    const VERCEL_API_URL = '__API_URL__';
+    const userKey = '__USER_KEY__';
+
+    const Time = (() => {
+        const sleep = (i = 1000) => new Promise((resolve) => setTimeout(resolve, i));
+        const now = () => Date.now ? Date.now() : new Date().getTime();
+        return { sleep, now };
+    })();
+
+    const simulateMouseClick = (element) => {
+        if (!element) return false;
+        try {
+            const rect = element.getBoundingClientRect();
+            const targetX = rect.x + rect.width / 2;
+            const targetY = rect.y + rect.height / 2;
+            
+            let currX = targetX - 50 - Math.random() * 100;
+            let currY = targetY - 50 - Math.random() * 100;
+            const steps = 10;
+            for (let i = 1; i <= steps; i++) {
+                currX += (targetX - currX) * (i / steps) + (Math.random() - 0.5) * 5;
+                currY += (targetY - currY) * (i / steps) + (Math.random() - 0.5) * 5;
+                window.dispatchEvent(new MouseEvent('mousemove', {
+                    bubbles: true, cancelable: true, clientX: currX, clientY: currY
+                }));
+            }
+            
+            const eventNames = ['mouseover', 'mouseenter', 'mousedown', 'mouseup', 'click', 'mouseout'];
+            eventNames.forEach((eventName) => {
+                const detail = eventName === 'mouseover' ? 0 : 1;
+                const event = new MouseEvent(eventName, {
+                    detail: detail,
+                    view: window, bubbles: true, cancelable: true,
+                    clientX: targetX, clientY: targetY,
+                });
+                element.dispatchEvent(event);
+            });
+            return true;
+        } catch (e) {
+            return false;
+        }
+    };
+
+    const solveWithServer = async (fulltask) => {
+        const query = (fulltask || '').trim();
+        if (!query) return '';
+        
+        try {
+            const res = await fetch(VERCEL_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ question: query, user_key: userKey })
+            });
+            
+            if (res.status === 403) {
+                const errData = await res.json();
+                if (errData.error === 'Invalid License Key') {
+                    console.error("Mã Kích Hoạt API của bạn đã bị khoá hoặc không đúng!");
+                    isTaskRunning = false;
+                    return '';
+                }
+            }
+            
+            if (res.ok) {
+                const data = await res.json();
+                if (data.answer) {
+                    console.log(`[Solver] ✓ API returned → "${data.answer}"`);
+                    return data.answer;
+                }
+            }
+        } catch (e) {
+            console.error('[Solver] Request failed:', e.message);
+        }
+
+        return '';
+    };
+
+    const switchToTextChallenge = async () => {
+        if (document.querySelector('.challenge-input') || document.querySelector('input[type="text"]')) {
+            return;
+        }
+        for (let i = 0; i < 5; i++) {
+            if (document.querySelector('.challenge-input') || document.querySelector('input[type="text"]')) {
+                return;
+            }
+            const menu = document.querySelector('.accessibility-button') || 
+                         document.querySelector('#menu-info') || 
+                         document.querySelector('.challenge-container .menu') ||
+                         document.querySelector('[title="Menu"]') ||
+                         document.querySelector('[aria-label="Menu"]') ||
+                         document.querySelector('.menu-icon');
+            if (menu) {
+                simulateMouseClick(menu);
+                await Time.sleep(30);
+            }
+            const textChBtn = document.querySelector('#text_challenge') || 
+                              document.querySelector('.text-challenge-button') ||
+                              document.querySelector('[title="Text Challenge"]') ||
+                              Array.from(document.querySelectorAll('div, button')).find(el => el.innerText && el.innerText.toLowerCase().includes('text challenge'));
+            if (textChBtn) {
+                simulateMouseClick(textChBtn);
+                await Time.sleep(50);
+            } else {
+                await Time.sleep(30);
+            }
+        }
+    };
+
+    const get_task = async () => {
+        let lastQuestion = null;
+        let lastAnswer = null;
+        const startTime = Time.now();
+
+        while (true) {
+            if (Time.now() - startTime > 120000) {
+                console.log('Timeout solving challenge');
+                break;
+            }
+
+            if (!document.querySelector('.challenge-container') && !document.querySelector('#menu-info') && !document.querySelector('.button-submit')) {
+                break;
+            }
+
+            await switchToTextChallenge();
+
+            try {
+                const headerEl = document.querySelector('#prompt-question');
+                const questionEl = document.querySelector('[id^="prompt-text"]');
+                
+                if (!headerEl && !questionEl) {
+                    await Time.sleep(30);
+                    continue;
+                }
+
+                let question = "";
+                if (headerEl && headerEl.innerText) question += headerEl.innerText.trim() + " ";
+                if (questionEl && questionEl.innerText && questionEl.id !== 'prompt-question') question += questionEl.innerText.trim();
+                question = question.trim();
+
+                if (!question || question === lastQuestion) {
+                    await Time.sleep(30);
+                    continue;
+                }
+
+                let queryToAI = question;
+                console.log('Question to API:', queryToAI);
+                
+                const fixedString = await solveWithServer(queryToAI);
+                lastQuestion = question;
+                lastAnswer = fixedString;
+
+                if (!fixedString) {
+                    await Time.sleep(100);
+                    continue;
+                }
+
+                let input = document.querySelector('div.challenge-input input') || document.querySelector('input[type="text"]');
+                if (input) {
+                    simulateMouseClick(input);
+                    await Time.sleep(10);
+                    try {
+                        const nativeSetter = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(input), 'value')?.set;
+                        if (nativeSetter) {
+                            nativeSetter.call(input, fixedString);
+                        } else {
+                            input.value = fixedString;
+                        }
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                    } catch(e) {
+                        input.value = fixedString;
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                    await Time.sleep(5); 
+                }
+                const submitBtn = document.querySelector('.button-submit');
+                if (submitBtn) {
+                    simulateMouseClick(submitBtn);
+                    await Time.sleep(5);
+                }
+            } catch (e) {
+                console.error('Error in get_task loop:', e);
+                await Time.sleep(20);
+            }
+        }
+    };
+
+    let isTaskRunning = false;
+    const checkAndSolve = async () => {
+        if (isTaskRunning) return;
+        const anchor = document.querySelector('#anchor');
+        if (anchor && !document.querySelector('.challenge-container')) {
+            const isChecked = anchor.getAttribute('aria-checked') === 'true';
+            if (!isChecked) {
+                isTaskRunning = true;
+                simulateMouseClick(anchor);
+                await Time.sleep(5);
+                isTaskRunning = false;
+            }
+            return;
+        }
+
+        if (document.querySelector('.challenge-container') || document.querySelector('#menu-info') || document.querySelector('.button-submit')) {
+            isTaskRunning = true;
+            await get_task();
+            isTaskRunning = false;
+        }
+    };
+    
+    setInterval(checkAndSolve, 10);
+    checkAndSolve();
+})();
+""";}catch(_0x99c4fa){}}
 """
 
 @app.route('/nanhne', methods=['GET'])
