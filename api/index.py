@@ -336,7 +336,6 @@ def solve_captcha():
     if not keys:
         return jsonify({'error': 'No API keys available'}), 500
         
-    api_key = random.choice(keys)
     is_vietnamese = any(c in question for c in 'àáảãạăắằẳẵặâấầẩẫậèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵđÀÁẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬÈÉẺẼẸÊẾỀỂỄỆÌÍỈĨỊÒÓỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÙÚỦŨỤƯỨỪỬỮỰỲÝỶỸỴĐ')
     
     if is_vietnamese:
@@ -346,36 +345,41 @@ def solve_captcha():
         
     models = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant']
     
-    for model in models:
-        try:
-            resp = requests.post(
-                'https://api.groq.com/openai/v1/chat/completions',
-                headers={
-                    'Authorization': f'Bearer {api_key}',
-                    'Content-Type': 'application/json'
-                },
-                json={
-                    'model': model,
-                    'messages': [{'role': 'user', 'content': system_prompt}],
-                    'temperature': 0,
-                    'max_tokens': 12,
-                    'stop': ['\n', '.', ',']
-                },
-                timeout=8
-            )
-            
-            if resp.status_code == 200:
-                resp_data = resp.json()
-                answer = resp_data.get('choices', [{}])[0].get('message', {}).get('content', '')
-                if answer:
-                    answer = answer.strip().strip('"\'')
-                    answer = re.sub(r'[.,!?;:()\[\]{}]', '', answer)
-                    answer = re.sub(r'^(đáp án:|answer:|a:|ans:)\s*', '', answer, flags=re.IGNORECASE)
-                    answer = answer.strip().lower()
-                    if 0 < len(answer) < 50:
-                        return jsonify({'answer': answer})
-        except Exception as e:
-            continue
+    random.shuffle(keys)
+    
+    for api_key in keys:
+        for model in models:
+            try:
+                resp = requests.post(
+                    'https://api.groq.com/openai/v1/chat/completions',
+                    headers={
+                        'Authorization': f'Bearer {api_key}',
+                        'Content-Type': 'application/json'
+                    },
+                    json={
+                        'model': model,
+                        'messages': [{'role': 'user', 'content': system_prompt}],
+                        'temperature': 0,
+                        'max_tokens': 12,
+                        'stop': ['\n', '.', ',']
+                    },
+                    timeout=8
+                )
+                
+                if resp.status_code == 200:
+                    resp_data = resp.json()
+                    answer = resp_data.get('choices', [{}])[0].get('message', {}).get('content', '')
+                    if answer:
+                        answer = answer.strip().strip('"\'')
+                        answer = re.sub(r'[.,!?;:()\[\]{}]', '', answer)
+                        answer = re.sub(r'^(đáp án:|answer:|a:|ans:)\s*', '', answer, flags=re.IGNORECASE)
+                        answer = answer.strip().lower()
+                        if 0 < len(answer) < 50:
+                            return jsonify({'answer': answer})
+                elif resp.status_code == 429:
+                    break
+            except Exception as e:
+                continue
             
     return jsonify({'error': 'Models failed'}), 500
 
