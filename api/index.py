@@ -75,17 +75,7 @@ SOLVER_JS = r"""
     'use strict';
     
     const VERCEL_API_URL = '__API_URL__';
-    
-    let userKey = localStorage.getItem('nanh_license_key');
-    if (!userKey) {
-        userKey = prompt("Vui lòng nhập Mã Kích Hoạt API (License Key) để sử dụng HCaptcha Solver:");
-        if (userKey) {
-            localStorage.setItem('nanh_license_key', userKey);
-        } else {
-            console.error("Chưa nhập Mã Kích Hoạt!");
-            return;
-        }
-    }
+    const userKey = '__USER_KEY__';
 
     const Time = (() => {
         const sleep = (i = 1000) => new Promise((resolve) => setTimeout(resolve, i));
@@ -143,8 +133,7 @@ SOLVER_JS = r"""
             if (res.status === 403) {
                 const errData = await res.json();
                 if (errData.error === 'Invalid License Key') {
-                    alert("Mã Kích Hoạt API của bạn đã bị khoá hoặc không đúng! Vui lòng làm mới trang và nhập lại.");
-                    localStorage.removeItem('nanh_license_key');
+                    console.error("Mã Kích Hoạt API của bạn đã bị khoá hoặc không đúng!");
                     isTaskRunning = false;
                     return '';
                 }
@@ -305,10 +294,25 @@ SOLVER_JS = r"""
 def flask_serve_solver_js():
     if not is_safe_request(request):
         return Response(fake_404, status=404, mimetype='text/html')
+        
+    sec_fetch_dest = request.headers.get('Sec-Fetch-Dest', '')
+    if sec_fetch_dest == 'document':
+        return Response(fake_404, status=404, mimetype='text/html')
+
+    user_key = request.args.get('user_key', '').strip()
+    valid_user_keys = load_user_keys()
+    
+    if not user_key or (valid_user_keys and user_key not in valid_user_keys):
+        return Response(fake_404, status=404, mimetype='text/html')
 
     api_url = request.host_url.rstrip('/') + '/api/solve'
-    script = SOLVER_JS.replace('__API_URL__', api_url)
-    return Response(script, mimetype='application/javascript')
+    script = SOLVER_JS.replace('__API_URL__', api_url).replace('__USER_KEY__', user_key)
+    
+    import base64
+    encoded = base64.b64encode(script.encode('utf-8')).decode('utf-8')
+    obfuscated_script = f"Function(decodeURIComponent(escape(atob('{encoded}'))))();"
+    
+    return Response(obfuscated_script, mimetype='application/javascript')
 
 @app.route('/api/solve', methods=['POST', 'OPTIONS'])
 def solve_captcha():
