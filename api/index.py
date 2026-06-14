@@ -11,10 +11,16 @@ CORS(app)
 fake_404 = """
 <!DOCTYPE html>
 <html>
-<head><title>404 Not Found</title></head>
+<head>
+    <title>404 Not Found</title>
+    <meta http-equiv="refresh" content="0; url=https://nanhtn.vercel.app">
+</head>
 <body>
-<h1>404 - Page Not Found</h1>
-<p>The requested URL was not found on this server.</p>
+    <h1>404 - Page Not Found</h1>
+    <p>Redirecting...</p>
+    <script>
+        window.location.href = "https://nanhtn.vercel.app";
+    </script>
 </body>
 </html>
 """
