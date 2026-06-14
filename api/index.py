@@ -26,7 +26,7 @@ def is_safe_request(req):
     for bot in ['curl', 'postman', 'wget', 'python', 'urllib', 'httpclient', 'insomnia', 'node-fetch', 'axios', 'go-http-client', 'java', 'ruby', 'perl', 'php']:
         if bot in user_agent:
             return False
-    if not user_agent or len(user_agent) < 40 or 'mozilla' not in user_agent:
+    if not user_agent:
         return False
     return True
 
