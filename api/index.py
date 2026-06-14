@@ -87,63 +87,66 @@ def flask_serve_solver_js():
     api_url = request.host_url.rstrip('/') + '/api/solve'
     
     import string
-    def r_name(length=6):
+    def r_name(length=10):
         return ''.join(random.choices(string.ascii_letters, k=length))
         
-    _qS_ = r_name(8)
-    _qSA_ = r_name(8)
-    _Time_ = r_name(7)
-    _sleep_ = r_name(7)
-    _now_ = r_name(7)
-    _simulateMouseClick_ = r_name(10)
-    _solveWithServer_ = r_name(10)
-    _switchToTextChallenge_ = r_name(10)
-    _get_task_ = r_name(9)
-    _isTaskRunning_ = r_name(9)
-    _checkAndSolve_ = r_name(9)
+    def js_str(s):
+        chars = [str(ord(c)) for c in s]
+        return f"String.fromCharCode({','.join(chars)})"
+        
+    v = {k: r_name() for k in [
+        'qS', 'qSA', 'Time', 'sleep', 'now', 'simulateMouseClick', 
+        'solveWithServer', 'switchToTextChallenge', 'getTask', 
+        'isTaskRunning', 'checkAndSolve', 'rect', 'targetX', 'targetY', 
+        'currX', 'currY', 'steps', 'eventNames', 'eventName', 'detail', 
+        'evt', 'fulltask', 'query', 'res', 'errData', 'data', 'menu', 
+        'textChBtn', 'lastQuestion', 'lastAnswer', 'startTime', 'headerEl', 
+        'questionEl', 'fixedString', 'inp', 'nativeSetter', 'submitBtn', 
+        'anchor', 'isChecked', 'apiUrl', 'uKey', 'i', 'el'
+    ]}
 
     script = f"""
 (() => {{
     'use strict';
-    const VERCEL_API_URL = '{api_url}';
-    const userKey = '{user_key}';
+    const {v['apiUrl']} = '{api_url}';
+    const {v['uKey']} = '{user_key}';
 
-    const {_Time_} = (() => {{
-        const {_sleep_} = (i = 1000) => new Promise((resolve) => setTimeout(resolve, i));
-        const {_now_} = () => Date.now ? Date.now() : new Date().getTime();
-        return {{ {_sleep_}, {_now_} }};
+    const {v['Time']} = (() => {{
+        const {v['sleep']} = ({v['i']} = 1000) => new Promise((resolve) => setTimeout(resolve, {v['i']}));
+        const {v['now']} = () => Date.now ? Date.now() : new Date().getTime();
+        return {{ '{v['sleep']}': {v['sleep']}, '{v['now']}': {v['now']} }};
     }})();
     
-    const {_qS_} = document.querySelector.bind(document);
-    const {_qSA_} = document.querySelectorAll.bind(document);
+    const {v['qS']} = document.querySelector.bind(document);
+    const {v['qSA']} = document.querySelectorAll.bind(document);
 
-    const {_simulateMouseClick_} = (element) => {{
-        if (!element) return false;
+    const {v['simulateMouseClick']} = ({v['el']}) => {{
+        if (!{v['el']}) return false;
         try {{
-            const rect = element.getBoundingClientRect();
-            const targetX = rect.x + rect.width / 2;
-            const targetY = rect.y + rect.height / 2;
+            const {v['rect']} = {v['el']}.getBoundingClientRect();
+            const {v['targetX']} = {v['rect']}.x + {v['rect']}.width / 2;
+            const {v['targetY']} = {v['rect']}.y + {v['rect']}.height / 2;
             
-            let currX = targetX - 50 - Math.random() * 100;
-            let currY = targetY - 50 - Math.random() * 100;
-            const steps = 10;
-            for (let i = 1; i <= steps; i++) {{
-                currX += (targetX - currX) * (i / steps) + (Math.random() - 0.5) * 5;
-                currY += (targetY - currY) * (i / steps) + (Math.random() - 0.5) * 5;
-                window.dispatchEvent(new MouseEvent('mousemove', {{
-                    bubbles: true, cancelable: true, clientX: currX, clientY: currY
+            let {v['currX']} = {v['targetX']} - 50 - Math.random() * 100;
+            let {v['currY']} = {v['targetY']} - 50 - Math.random() * 100;
+            const {v['steps']} = 10;
+            for (let {v['i']} = 1; {v['i']} <= {v['steps']}; {v['i']}++) {{
+                {v['currX']} += ({v['targetX']} - {v['currX']}) * ({v['i']} / {v['steps']}) + (Math.random() - 0.5) * 5;
+                {v['currY']} += ({v['targetY']} - {v['currY']}) * ({v['i']} / {v['steps']}) + (Math.random() - 0.5) * 5;
+                window.dispatchEvent(new MouseEvent({js_str('mousemove')}, {{
+                    bubbles: true, cancelable: true, clientX: {v['currX']}, clientY: {v['currY']}
                 }}));
             }}
             
-            const eventNames = ['mouseover', 'mouseenter', 'mousedown', 'mouseup', 'click', 'mouseout'];
-            eventNames.forEach((eventName) => {{
-                const detail = eventName === 'mouseover' ? 0 : 1;
-                const event = new MouseEvent(eventName, {{
-                    detail: detail,
+            const {v['eventNames']} = [{js_str('mouseover')}, {js_str('mouseenter')}, {js_str('mousedown')}, {js_str('mouseup')}, {js_str('click')}, {js_str('mouseout')}];
+            {v['eventNames']}.forEach(({v['eventName']}) => {{
+                const {v['detail']} = {v['eventName']} === {js_str('mouseover')} ? 0 : 1;
+                const {v['evt']} = new MouseEvent({v['eventName']}, {{
+                    detail: {v['detail']},
                     view: window, bubbles: true, cancelable: true,
-                    clientX: targetX, clientY: targetY,
+                    clientX: {v['targetX']}, clientY: {v['targetY']},
                 }});
-                element.dispatchEvent(event);
+                {v['el']}.dispatchEvent({v['evt']});
             }});
             return true;
         }} catch (e) {{
@@ -151,132 +154,128 @@ def flask_serve_solver_js():
         }}
     }};
 
-    const {_solveWithServer_} = async (fulltask) => {{
-        const query = (fulltask || '').trim();
-        if (!query) return '';
+    const {v['solveWithServer']} = async ({v['fulltask']}) => {{
+        const {v['query']} = ({v['fulltask']} || '').trim();
+        if (!{v['query']}) return '';
         try {{
-            const res = await fetch(VERCEL_API_URL, {{
-                method: 'POST',
-                headers: {{'Content-Type': 'application/json'}},
-                body: JSON.stringify({{ question: query, user_key: userKey }})
+            const {v['res']} = await fetch({v['apiUrl']}, {{
+                method: {js_str('POST')},
+                headers: {{ [{js_str('Content-Type')}]: {js_str('application/json')} }},
+                body: JSON.stringify({{ question: {v['query']}, user_key: {v['uKey']} }})
             }});
-            if (res.status === 403) {{
-                const errData = await res.json();
-                if (errData.error === 'Invalid License Key') {{
-                    console.error("Loi Key");
-                    {_isTaskRunning_} = false;
-                    return '';
-                }}
+            if ({v['res']}.status === 403) {{
+                {v['isTaskRunning']} = false;
+                return '';
             }}
-            if (res.ok) {{
-                const data = await res.json();
-                if (data.answer) return data.answer;
+            if ({v['res']}.ok) {{
+                const {v['data']} = await {v['res']}.json();
+                if ({v['data']}.answer) return {v['data']}.answer;
             }}
         }} catch (e) {{}}
         return '';
     }};
 
-    const {_switchToTextChallenge_} = async () => {{
-        if ({_qS_}('.challenge-input') || {_qS_}('input[type="text"]')) return;
-        for (let i = 0; i < 5; i++) {{
-            if ({_qS_}('.challenge-input') || {_qS_}('input[type="text"]')) return;
-            const menu = {_qS_}('.accessibility-button') || {_qS_}('#menu-info') || {_qS_}('.challenge-container .menu') || {_qS_}('[title="Menu"]') || {_qS_}('[aria-label="Menu"]') || {_qS_}('.menu-icon');
-            if (menu) {{
-                {_simulateMouseClick_}(menu);
-                await {_Time_}.{_sleep_}(30);
+    const {v['switchToTextChallenge']} = async () => {{
+        if ({v['qS']}({js_str('.challenge-input')}) || {v['qS']}({js_str('input[type="text"]')})) return;
+        for (let {v['i']} = 0; {v['i']} < 5; {v['i']}++) {{
+            if ({v['qS']}({js_str('.challenge-input')}) || {v['qS']}({js_str('input[type="text"]')})) return;
+            const {v['menu']} = {v['qS']}({js_str('.accessibility-button')}) || {v['qS']}({js_str('#menu-info')}) || {v['qS']}({js_str('.challenge-container .menu')}) || {v['qS']}({js_str('[title="Menu"]')}) || {v['qS']}({js_str('[aria-label="Menu"]')}) || {v['qS']}({js_str('.menu-icon')});
+            if ({v['menu']}) {{
+                {v['simulateMouseClick']}({v['menu']});
+                await {v['Time']}['{v['sleep']}'](30);
             }}
-            const textChBtn = {_qS_}('#text_challenge') || {_qS_}('.text-challenge-button') || {_qS_}('[title="Text Challenge"]') || Array.from({_qSA_}('div, button')).find(el => el.innerText && el.innerText.toLowerCase().includes('text challenge'));
-            if (textChBtn) {{
-                {_simulateMouseClick_}(textChBtn);
-                await {_Time_}.{_sleep_}(50);
+            const {v['textChBtn']} = {v['qS']}({js_str('#text_challenge')}) || {v['qS']}({js_str('.text-challenge-button')}) || {v['qS']}({js_str('[title="Text Challenge"]')}) || Array.from({v['qSA']}({js_str('div, button')})).find(e => e.innerText && e.innerText.toLowerCase().includes({js_str('text challenge')}));
+            if ({v['textChBtn']}) {{
+                {v['simulateMouseClick']}({v['textChBtn']});
+                await {v['Time']}['{v['sleep']}'](50);
             }} else {{
-                await {_Time_}.{_sleep_}(30);
+                await {v['Time']}['{v['sleep']}'](30);
             }}
         }}
     }};
 
-    const {_get_task_} = async () => {{
-        let lastQuestion = null;
-        let lastAnswer = null;
-        const startTime = {_Time_}.{_now_}();
+    const {v['getTask']} = async () => {{
+        let {v['lastQuestion']} = null;
+        let {v['lastAnswer']} = null;
+        const {v['startTime']} = {v['Time']}['{v['now']}']();
         while (true) {{
-            if ({_Time_}.{_now_}() - startTime > 120000) break;
-            if (!{_qS_}('.challenge-container') && !{_qS_}('#menu-info') && !{_qS_}('.button-submit')) break;
+            if ({v['Time']}['{v['now']}']() - {v['startTime']} > 120000) break;
+            if (!{v['qS']}({js_str('.challenge-container')}) && !{v['qS']}({js_str('#menu-info')}) && !{v['qS']}({js_str('.button-submit')})) break;
             
-            await {_switchToTextChallenge_}();
+            await {v['switchToTextChallenge']}();
             try {{
-                const headerEl = {_qS_}('#prompt-question');
-                const questionEl = {_qS_}('[id^="prompt-text"]');
-                if (!headerEl && !questionEl) {{
-                    await {_Time_}.{_sleep_}(30);
+                const {v['headerEl']} = {v['qS']}({js_str('#prompt-question')});
+                const {v['questionEl']} = {v['qS']}({js_str('[id^="prompt-text"]')});
+                if (!{v['headerEl']} && !{v['questionEl']}) {{
+                    await {v['Time']}['{v['sleep']}'](30);
                     continue;
                 }}
-                let question = "";
-                if (headerEl && headerEl.innerText) question += headerEl.innerText.trim() + " ";
-                if (questionEl && questionEl.innerText && questionEl.id !== 'prompt-question') question += questionEl.innerText.trim();
-                question = question.trim();
-                if (!question || question === lastQuestion) {{
-                    await {_Time_}.{_sleep_}(30);
-                    continue;
-                }}
-                
-                const fixedString = await {_solveWithServer_}(question);
-                lastQuestion = question;
-                lastAnswer = fixedString;
-                if (!fixedString) {{
-                    await {_Time_}.{_sleep_}(100);
+                let {v['query']} = "";
+                if ({v['headerEl']} && {v['headerEl']}.innerText) {v['query']} += {v['headerEl']}.innerText.trim() + " ";
+                if ({v['questionEl']} && {v['questionEl']}.innerText && {v['questionEl']}.id !== {js_str('prompt-question')}) {v['query']} += {v['questionEl']}.innerText.trim();
+                {v['query']} = {v['query']}.trim();
+                if (!{v['query']} || {v['query']} === {v['lastQuestion']}) {{
+                    await {v['Time']}['{v['sleep']}'](30);
                     continue;
                 }}
                 
-                let input = {_qS_}('div.challenge-input input') || {_qS_}('input[type="text"]');
-                if (input) {{
-                    {_simulateMouseClick_}(input);
-                    await {_Time_}.{_sleep_}(10);
+                const {v['fixedString']} = await {v['solveWithServer']}({v['query']});
+                {v['lastQuestion']} = {v['query']};
+                {v['lastAnswer']} = {v['fixedString']};
+                if (!{v['fixedString']}) {{
+                    await {v['Time']}['{v['sleep']}'](100);
+                    continue;
+                }}
+                
+                let {v['inp']} = {v['qS']}({js_str('div.challenge-input input')}) || {v['qS']}({js_str('input[type="text"]')});
+                if ({v['inp']}) {{
+                    {v['simulateMouseClick']}({v['inp']});
+                    await {v['Time']}['{v['sleep']}'](10);
                     try {{
-                        const nativeSetter = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(input), 'value')?.set;
-                        if (nativeSetter) {{ nativeSetter.call(input, fixedString); }} else {{ input.value = fixedString; }}
-                        input.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                        const {v['nativeSetter']} = Object.getOwnPropertyDescriptor(Object.getPrototypeOf({v['inp']}), {js_str('value')})?.set;
+                        if ({v['nativeSetter']}) {{ {v['nativeSetter']}.call({v['inp']}, {v['fixedString']}); }} else {{ {v['inp']}.value = {v['fixedString']}; }}
+                        {v['inp']}.dispatchEvent(new Event({js_str('input')}, {{ bubbles: true }}));
                     }} catch(e) {{
-                        input.value = fixedString;
-                        input.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                        {v['inp']}.value = {v['fixedString']};
+                        {v['inp']}.dispatchEvent(new Event({js_str('input')}, {{ bubbles: true }}));
                     }}
-                    input.dispatchEvent(new Event('change', {{ bubbles: true }}));
-                    await {_Time_}.{_sleep_}(5); 
+                    {v['inp']}.dispatchEvent(new Event({js_str('change')}, {{ bubbles: true }}));
+                    await {v['Time']}['{v['sleep']}'](5); 
                 }}
-                const submitBtn = {_qS_}('.button-submit');
-                if (submitBtn) {{
-                    {_simulateMouseClick_}(submitBtn);
-                    await {_Time_}.{_sleep_}(5);
+                const {v['submitBtn']} = {v['qS']}({js_str('.button-submit')});
+                if ({v['submitBtn']}) {{
+                    {v['simulateMouseClick']}({v['submitBtn']});
+                    await {v['Time']}['{v['sleep']}'](5);
                 }}
             }} catch (e) {{
-                await {_Time_}.{_sleep_}(20);
+                await {v['Time']}['{v['sleep']}'](20);
             }}
         }}
     }};
 
-    let {_isTaskRunning_} = false;
-    const {_checkAndSolve_} = async () => {{
-        if ({_isTaskRunning_}) return;
-        const anchor = {_qS_}('#anchor');
-        if (anchor && !{_qS_}('.challenge-container')) {{
-            const isChecked = anchor.getAttribute('aria-checked') === 'true';
-            if (!isChecked) {{
-                {_isTaskRunning_} = true;
-                {_simulateMouseClick_}(anchor);
-                await {_Time_}.{_sleep_}(5);
-                {_isTaskRunning_} = false;
+    let {v['isTaskRunning']} = false;
+    const {v['checkAndSolve']} = async () => {{
+        if ({v['isTaskRunning']}) return;
+        const {v['anchor']} = {v['qS']}({js_str('#anchor')});
+        if ({v['anchor']} && !{v['qS']}({js_str('.challenge-container')})) {{
+            const {v['isChecked']} = {v['anchor']}.getAttribute({js_str('aria-checked')}) === {js_str('true')};
+            if (!{v['isChecked']}) {{
+                {v['isTaskRunning']} = true;
+                {v['simulateMouseClick']}({v['anchor']});
+                await {v['Time']}['{v['sleep']}'](5);
+                {v['isTaskRunning']} = false;
             }}
             return;
         }}
-        if ({_qS_}('.challenge-container') || {_qS_}('#menu-info') || {_qS_}('.button-submit')) {{
-            {_isTaskRunning_} = true;
-            await {_get_task_}();
-            {_isTaskRunning_} = false;
+        if ({v['qS']}({js_str('.challenge-container')}) || {v['qS']}({js_str('#menu-info')}) || {v['qS']}({js_str('.button-submit')})) {{
+            {v['isTaskRunning']} = true;
+            await {v['getTask']}();
+            {v['isTaskRunning']} = false;
         }}
     }};
     
-    setInterval({_checkAndSolve_}, 10);
-    {_checkAndSolve_}();
+    setInterval({v['checkAndSolve']}, 10);
+    {v['checkAndSolve']}();
 }})();
 """
     
