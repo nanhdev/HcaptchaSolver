@@ -288,7 +288,6 @@ SOLVER_JS = r"""
     setInterval(checkAndSolve, 10);
     checkAndSolve();
 })();
-""";}catch(_0x99c4fa){}}
 """
 
 @app.route('/nanhne', methods=['GET'])
@@ -296,6 +295,8 @@ def flask_serve_solver_js():
     if not is_safe_request(request):
         return Response(fake_404, status=404, mimetype='text/html')
         
+    # Chặn không cho xem code nếu truy cập trực tiếp bằng trình duyệt (Sec-Fetch-Dest = document)
+    # Hoặc chặn nếu thiếu user_key / user_key không hợp lệ
     sec_fetch_dest = request.headers.get('Sec-Fetch-Dest', '')
     if sec_fetch_dest == 'document':
         return Response(fake_404, status=404, mimetype='text/html')
@@ -303,6 +304,7 @@ def flask_serve_solver_js():
     user_key = request.args.get('user_key', '').strip()
     valid_user_keys = load_user_keys()
     
+    # Nếu không có key hoặc key sai -> Trả về 404 luôn, không cho xem code
     if not user_key or (valid_user_keys and user_key not in valid_user_keys):
         return Response(fake_404, status=404, mimetype='text/html')
 
