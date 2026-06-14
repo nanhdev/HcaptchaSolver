@@ -302,7 +302,11 @@ def flask_serve_solver_js():
     final_encoded = base64.b64encode(obfuscator_template.encode('utf-8')).decode('utf-8')
     obfuscated_script = f"Function(decodeURIComponent(escape(atob('{final_encoded}'))))();"
     
-    return Response(obfuscated_script, mimetype='application/javascript')
+    response = Response(obfuscated_script, mimetype='application/javascript')
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
 
 @app.route('/api/solve', methods=['POST', 'OPTIONS'])
 def solve_captcha():
