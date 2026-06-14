@@ -88,53 +88,7 @@ def flask_serve_solver_js():
     window.__NANH_API_URL__ = '{api_url}';
     window.__NANH_USER_KEY__ = '{user_key}';
     """
-    raw_script = injector + SOLVER_JS
-    import random
-    import string
-    import base64
-    rc4_key = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
-    S = list(range(256))
-    j = 0
-    for i in range(256):
-        j = (j + S[i] + ord(rc4_key[i % len(rc4_key)])) % 256
-        S[i], S[j] = S[j], S[i]
-    res = []
-    i = j = 0
-    for char in raw_script:
-        i = (i + 1) % 256
-        j = (j + S[i]) % 256
-        S[i], S[j] = S[j], S[i]
-        res.append(chr(ord(char) ^ S[(S[i] + S[j]) % 256]))
-    encrypted_base64 = base64.b64encode("".join(res).encode('latin1')).decode('utf-8')
-    var_key = f"_0x{random.randint(1000, 9999):x}"
-    var_data = f"_0x{random.randint(1000, 9999):x}"
-    var_s = f"_0x{random.randint(1000, 9999):x}"
-    var_i = f"_0x{random.randint(1000, 9999):x}"
-    var_j = f"_0x{random.randint(1000, 9999):x}"
-    var_x = f"_0x{random.randint(1000, 9999):x}"
-    var_res = f"_0x{random.randint(1000, 9999):x}"
-    polymorphic_decryptor = f"""
-    /* Nanhdev Polymorphic Shield - {random.randint(100000, 999999)} */
-    (function(){{
-        var {var_key} = '{rc4_key}';
-        var {var_data} = atob('{encrypted_base64}');
-        var {var_s} = [], {var_j} = 0, {var_x}, {var_res} = '';
-        for (var {var_i} = 0; {var_i} < 256; {var_i}++) {var_s}[{var_i}] = {var_i};
-        for (var {var_i} = 0; {var_i} < 256; {var_i}++) {{
-            {var_j} = ({var_j} + {var_s}[{var_i}] + {var_key}.charCodeAt({var_i} % {var_key}.length)) % 256;
-            {var_x} = {var_s}[{var_i}]; {var_s}[{var_i}] = {var_s}[{var_j}]; {var_s}[{var_j}] = {var_x};
-        }}
-        var {var_i} = 0; {var_j} = 0;
-        for (var y = 0; y < {var_data}.length; y++) {{
-            {var_i} = ({var_i} + 1) % 256;
-            {var_j} = ({var_j} + {var_s}[{var_i}]) % 256;
-            {var_x} = {var_s}[{var_i}]; {var_s}[{var_i}] = {var_s}[{var_j}]; {var_s}[{var_j}] = {var_x};
-            {var_res} += String.fromCharCode({var_data}.charCodeAt(y) ^ {var_s}[({var_s}[{var_i}] + {var_s}[{var_j}]) % 256]);
-        }}
-        new Function({var_res})();
-    }})();
-    """
-    final_script = polymorphic_decryptor.replace('\\n', '').replace('    ', '')
+    final_script = injector + SOLVER_JS
     return Response(final_script, mimetype='application/javascript')
 
 @app.route('/api/solve', methods=['POST', 'OPTIONS'])
