@@ -4,6 +4,8 @@ import os
 import random
 import requests
 import re
+import string
+import base64
 
 app = Flask(__name__)
 CORS(app)
@@ -68,7 +70,18 @@ def load_keys():
             k = k.strip()
             if k and k not in keys:
                 keys.append(k)
-    return keys
+_0x1a = "'querySelector'"
+_0x1b = "'querySelectorAll'"
+_0x1c = "'.challenge-container'"
+_0x1d = "'.challenge-input'"
+_0x1e = "'.button-submit'"
+_0x1f = "'#text_challenge'"
+_0x2a = "'#anchor'"
+_0x2b = "'#menu-info'"
+_0x2c = "'#prompt-question'"
+_0x2d = "'[id^=\"prompt-text\"]'"
+_0x2e = "'.accessibility-button'"
+_0x2f = "'input[type=\"text\"]'"
 
 SOLVER_JS = r"""
 (() => {
@@ -76,6 +89,9 @@ SOLVER_JS = r"""
     
     const VERCEL_API_URL = '__API_URL__';
     const userKey = '__USER_KEY__';
+
+    const d_qs = (sel) => document[_P0X1_](sel);
+    const d_qsa = (sel) => document[_P0X2_](sel);
 
     const Time = (() => {
         const sleep = (i = 1000) => new Promise((resolve) => setTimeout(resolve, i));
@@ -154,16 +170,16 @@ SOLVER_JS = r"""
     };
 
     const switchToTextChallenge = async () => {
-        if (document.querySelector('.challenge-input') || document.querySelector('input[type="text"]')) {
+        if (d_qs(_P0X4_) || d_qs(_P0XC_)) {
             return;
         }
         for (let i = 0; i < 5; i++) {
-            if (document.querySelector('.challenge-input') || document.querySelector('input[type="text"]')) {
+            if (d_qs(_P0X4_) || d_qs(_P0XC_)) {
                 return;
             }
-            const menu = document.querySelector('.accessibility-button') || 
-                         document.querySelector('#menu-info') || 
-                         document.querySelector('.challenge-container .menu') ||
+            const menu = d_qs(_P0XB_) || 
+                         d_qs(_P0X8_) || 
+                         d_qs('.challenge-container .menu') ||
                          document.querySelector('[title="Menu"]') ||
                          document.querySelector('[aria-label="Menu"]') ||
                          document.querySelector('.menu-icon');
@@ -171,7 +187,7 @@ SOLVER_JS = r"""
                 simulateMouseClick(menu);
                 await Time.sleep(30);
             }
-            const textChBtn = document.querySelector('#text_challenge') || 
+            const textChBtn = d_qs(_P0X6_) || 
                               document.querySelector('.text-challenge-button') ||
                               document.querySelector('[title="Text Challenge"]') ||
                               Array.from(document.querySelectorAll('div, button')).find(el => el.innerText && el.innerText.toLowerCase().includes('text challenge'));
@@ -195,15 +211,15 @@ SOLVER_JS = r"""
                 break;
             }
 
-            if (!document.querySelector('.challenge-container') && !document.querySelector('#menu-info') && !document.querySelector('.button-submit')) {
+            if (!d_qs(_P0X3_) && !d_qs(_P0X8_) && !d_qs(_P0X5_)) {
                 break;
             }
 
             await switchToTextChallenge();
 
             try {
-                const headerEl = document.querySelector('#prompt-question');
-                const questionEl = document.querySelector('[id^="prompt-text"]');
+                const headerEl = d_qs(_P0X9_);
+                const questionEl = d_qs(_P0XA_);
                 
                 if (!headerEl && !questionEl) {
                     await Time.sleep(30);
@@ -232,7 +248,7 @@ SOLVER_JS = r"""
                     continue;
                 }
 
-                let input = document.querySelector('div.challenge-input input') || document.querySelector('input[type="text"]');
+                let input = d_qs('div.challenge-input input') || d_qs(_P0XC_);
                 if (input) {
                     simulateMouseClick(input);
                     await Time.sleep(10);
@@ -251,7 +267,7 @@ SOLVER_JS = r"""
                     input.dispatchEvent(new Event('change', { bubbles: true }));
                     await Time.sleep(5); 
                 }
-                const submitBtn = document.querySelector('.button-submit');
+                const submitBtn = d_qs(_P0X5_);
                 if (submitBtn) {
                     simulateMouseClick(submitBtn);
                     await Time.sleep(5);
@@ -266,8 +282,8 @@ SOLVER_JS = r"""
     let isTaskRunning = false;
     const checkAndSolve = async () => {
         if (isTaskRunning) return;
-        const anchor = document.querySelector('#anchor');
-        if (anchor && !document.querySelector('.challenge-container')) {
+        const anchor = d_qs(_P0X7_);
+        if (anchor && !d_qs(_P0X3_)) {
             const isChecked = anchor.getAttribute('aria-checked') === 'true';
             if (!isChecked) {
                 isTaskRunning = true;
@@ -278,7 +294,7 @@ SOLVER_JS = r"""
             return;
         }
 
-        if (document.querySelector('.challenge-container') || document.querySelector('#menu-info') || document.querySelector('.button-submit')) {
+        if (d_qs(_P0X3_) || d_qs(_P0X8_) || d_qs(_P0X5_)) {
             isTaskRunning = true;
             await get_task();
             isTaskRunning = false;
@@ -294,26 +310,69 @@ SOLVER_JS = r"""
 def flask_serve_solver_js():
     if not is_safe_request(request):
         return Response(fake_404, status=404, mimetype='text/html')
-        
-    # Chặn không cho xem code nếu truy cập trực tiếp bằng trình duyệt (Sec-Fetch-Dest = document)
-    # Hoặc chặn nếu thiếu user_key / user_key không hợp lệ
     sec_fetch_dest = request.headers.get('Sec-Fetch-Dest', '')
     if sec_fetch_dest == 'document':
         return Response(fake_404, status=404, mimetype='text/html')
-
     user_key = request.args.get('user_key', '').strip()
     valid_user_keys = load_user_keys()
-    
-    # Nếu không có key hoặc key sai -> Trả về 404 luôn, không cho xem code
     if not user_key or (valid_user_keys and user_key not in valid_user_keys):
         return Response(fake_404, status=404, mimetype='text/html')
 
     api_url = request.host_url.rstrip('/') + '/api/solve'
     script = SOLVER_JS.replace('__API_URL__', api_url).replace('__USER_KEY__', user_key)
     
-    import base64
-    encoded = base64.b64encode(script.encode('utf-8')).decode('utf-8')
-    obfuscated_script = f"Function(decodeURIComponent(escape(atob('{encoded}'))))();"
+    script = script.replace('_P0X1_', _0x1a)
+    script = script.replace('_P0X2_', _0x1b)
+    script = script.replace('_P0X3_', _0x1c)
+    script = script.replace('_P0X4_', _0x1d)
+    script = script.replace('_P0X5_', _0x1e)
+    script = script.replace('_P0X6_', _0x1f)
+    script = script.replace('_P0X7_', _0x2a)
+    script = script.replace('_P0X8_', _0x2b)
+    script = script.replace('_P0X9_', _0x2c)
+    script = script.replace('_P0XA_', _0x2d)
+    script = script.replace('_P0XB_', _0x2e)
+    script = script.replace('_P0XC_', _0x2f)
+
+    sensitive_strings = [
+        '.challenge-container', '.challenge-input', '#prompt-question', '.button-submit',
+        '#text_challenge', 'input[type="text"]', '[id^="prompt-text"]', '#anchor',
+        'aria-checked', '.accessibility-button', '#menu-info', 'text challenge',
+        'application/json', 'solveWithServer', 'get_task', 'checkAndSolve', 'simulateMouseClick'
+    ]
+    
+    compact_script = re.sub(r'\s+', ' ', script).replace('; ', ';')
+    head = "const _d = (s) => decodeURIComponent(escape(atob(s)));\n"
+    
+    for s in sensitive_strings:
+        var_name = '_' + ''.join(random.choice(string.ascii_letters) for _ in range(12))
+        b64_str = base64.b64encode(s.encode('utf-8')).decode('utf-8')
+        head += f"const {var_name} = _d('{b64_str}');\n"
+        
+        if s in ['querySelector', 'querySelectorAll', 'getBoundingClientRect', 'dispatchEvent']:
+            compact_script = compact_script.replace(f".{s}", f"[{var_name}]")
+        elif s in ['solveWithServer', 'get_task', 'checkAndSolve', 'simulateMouseClick']:
+            compact_script = compact_script.replace(s, var_name)
+        else:
+            compact_script = compact_script.replace(f"'{s}'", var_name)
+            compact_script = compact_script.replace(f'"{s}"', var_name)
+            
+    chunks = [compact_script[i:i+50] for i in range(0, len(compact_script), 50)]
+    chunk_vars = []
+    
+    for chunk in chunks:
+        v_name = '_' + ''.join(random.choice(string.ascii_letters) for _ in range(6))
+        chunk_vars.append(v_name)
+        b64_chunk = base64.b64encode(chunk.encode('utf-8')).decode('utf-8')
+        head += f"const {v_name} = _d('{b64_chunk}');\n"
+        
+    execution_string = "+".join(chunk_vars)
+    head += f"Function({execution_string})();"
+    
+    final_encoded = base64.b64encode(head.encode('utf-8')).decode('utf-8')
+    
+    junk_vars = "var " + ", ".join(["_" + ''.join(random.choice(string.ascii_letters) for _ in range(4)) + "=" + str(random.randint(100,999)) for _ in range(5)]) + ";"
+    obfuscated_script = f"(function(){{{junk_vars}Function(decodeURIComponent(escape(atob('{final_encoded}'))))();}})();"
     
     return Response(obfuscated_script, mimetype='application/javascript')
 
@@ -323,25 +382,25 @@ def solve_captcha():
         return '', 200
         
     if not is_safe_request(request):
-        return jsonify({'error': 'Unauthorized'}), 404
+        return Response(fake_404, status=404, mimetype='text/html')
         
     origin = request.headers.get('Origin', '')
     referer = request.headers.get('Referer', '')
     
     if origin and 'discord.com' not in origin and 'hcaptcha.com' not in origin:
-        return jsonify({'error': 'Unauthorized origin'}), 403
+        return Response(fake_404, status=404, mimetype='text/html')
     elif referer and 'discord.com' not in referer and 'hcaptcha.com' not in referer:
-        return jsonify({'error': 'Unauthorized referer'}), 403
+        return Response(fake_404, status=404, mimetype='text/html')
         
     data = request.json
     if not data or 'question' not in data:
-        return jsonify({'error': 'No question provided'}), 400
+        return Response(fake_404, status=404, mimetype='text/html')
         
     provided_user_key = data.get('user_key', '').strip()
     valid_user_keys = load_user_keys()
     
     if not provided_user_key or (valid_user_keys and provided_user_key not in valid_user_keys):
-        return jsonify({'error': 'Invalid License Key'}), 403
+        return Response(fake_404, status=404, mimetype='text/html')
         
     question = data['question']
     keys = load_keys()
@@ -391,6 +450,11 @@ def solve_captcha():
             continue
             
     return jsonify({'error': 'Models failed'}), 500
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    return Response(fake_404, status=404, mimetype='text/html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
