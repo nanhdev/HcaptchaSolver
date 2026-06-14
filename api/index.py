@@ -69,9 +69,6 @@ def load_keys():
             if k and k not in keys:
                 keys.append(k)
     return keys
-
-# Code SOLVER_JS được chuyển vào trong hàm để sinh ngẫu nhiên mỗi lần gọi
-
 @app.route('/nanhne', methods=['GET'])
 def flask_serve_solver_js():
     if not is_safe_request(request):
@@ -83,17 +80,13 @@ def flask_serve_solver_js():
     valid_user_keys = load_user_keys()
     if not user_key or (valid_user_keys and user_key not in valid_user_keys):
         return Response(fake_404, status=404, mimetype='text/html')
-
     api_url = request.host_url.rstrip('/') + '/api/solve'
-    
     import string
     def r_name(length=10):
         return ''.join(random.choices(string.ascii_letters, k=length))
-        
     def js_str(s):
         chars = [str(ord(c)) for c in s]
         return f"String.fromCharCode({','.join(chars)})"
-        
     v = {k: r_name() for k in [
         'qS', 'qSA', 'Time', 'sleep', 'now', 'simulateMouseClick', 
         'solveWithServer', 'switchToTextChallenge', 'getTask', 
@@ -104,7 +97,6 @@ def flask_serve_solver_js():
         'questionEl', 'fixedString', 'inp', 'nativeSetter', 'submitBtn', 
         'anchor', 'isChecked', 'apiUrl', 'uKey', 'i', 'el'
     ]}
-
     script = f"""
 (() => {{
     'use strict';
@@ -137,7 +129,6 @@ def flask_serve_solver_js():
                     bubbles: true, cancelable: true, clientX: {v['currX']}, clientY: {v['currY']}
                 }}));
             }}
-            
             const {v['eventNames']} = [{js_str('mouseover')}, {js_str('mouseenter')}, {js_str('mousedown')}, {js_str('mouseup')}, {js_str('click')}, {js_str('mouseout')}];
             {v['eventNames']}.forEach(({v['eventName']}) => {{
                 const {v['detail']} = {v['eventName']} === {js_str('mouseover')} ? 0 : 1;
@@ -184,7 +175,7 @@ def flask_serve_solver_js():
                 {v['simulateMouseClick']}({v['menu']});
                 await {v['Time']}['{v['sleep']}'](30);
             }}
-            const {v['textChBtn']} = {v['qS']}({js_str('#text_challenge')}) || {v['qS']}({js_str('.text-challenge-button')}) || {v['qS']}({js_str('[title="Text Challenge"]')}) || Array.from({v['qSA']}({js_str('div, button')})).find(e => e.innerText && e.innerText.toLowerCase().includes({js_str('text challenge')}));
+            const {v['textChBtn']} = {v['qS']}({js_str('#text_challenge')}) || {v['qS']}({js_str('.text-challenge-button')}) || {v['qS']}({js_str('[title="Text Challenge"]')}) || Array.from({v['qSA']}({js_str('div, button')})).find(e => e[{js_str('innerText')}] && e[{js_str('innerText')}].toLowerCase().includes({js_str('text challenge')}));
             if ({v['textChBtn']}) {{
                 {v['simulateMouseClick']}({v['textChBtn']});
                 await {v['Time']}['{v['sleep']}'](50);
@@ -278,10 +269,38 @@ def flask_serve_solver_js():
     {v['checkAndSolve']}();
 }})();
 """
-    
     import base64
-    encoded = base64.b64encode(script.encode('utf-8')).decode('utf-8')
-    obfuscated_script = f"Function(decodeURIComponent(escape(atob('{encoded}'))))();"
+    import urllib.parse
+    encoded_url = urllib.parse.quote(script)
+    
+    xor_key = random.randint(10, 200)
+    xor_encrypted = [ord(c) ^ xor_key for c in encoded_url]
+    hex_array = [f"0x{x:02x}" for x in xor_encrypted]
+    hex_str = ",".join(hex_array)
+    decoder_func = r_name(8)
+    arr_name = r_name(8)
+    i_var = r_name(4)
+    char_var = r_name(4)
+    str_var = r_name(4)
+    
+    obfuscator_template = f"""
+    (function(){{
+        var {arr_name} = [{hex_str}];
+        var {decoder_func} = function() {{
+            var {str_var} = '';
+            for (var {i_var} = 0; {i_var} < {arr_name}.length; {i_var}++) {{
+                var {char_var} = {arr_name}[{i_var}] ^ {xor_key};
+                {str_var} += String.fromCharCode({char_var});
+            }}
+            return decodeURIComponent({str_var});
+        }};
+        var run = new Function({decoder_func}());
+        run();
+    }})();
+    """
+    
+    final_encoded = base64.b64encode(obfuscator_template.encode('utf-8')).decode('utf-8')
+    obfuscated_script = f"Function(decodeURIComponent(escape(atob('{final_encoded}'))))();"
     
     return Response(obfuscated_script, mimetype='application/javascript')
 
